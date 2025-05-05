@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CaseFlow.DAL.Enums;
+using CaseFlow.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CaseFlow.DAL.Models;
+namespace CaseFlow.DAL.Data;
 
 public partial class DetectiveAgencyDbContext : DbContext
 {
@@ -14,6 +14,15 @@ public partial class DetectiveAgencyDbContext : DbContext
         : base(options)
     {
     }
+
+    #region ConnectionString
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=DetectiveAgencyDb;Username=postgres;Password=12345");
+
+    #endregion
+    
+    #region DbSet
 
     public virtual DbSet<Case> Cases { get; set; }
 
@@ -33,35 +42,39 @@ public partial class DetectiveAgencyDbContext : DbContext
 
     public virtual DbSet<Suspect> Suspects { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=DetectiveAgencyDb;Username=postgres;Password=12345");
-
+    #endregion
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .HasPostgresEnum("case_status", new[] { "Відкрито", "Закрито", "Призупинено" })
             .HasPostgresEnum("detective_status", new[] { "Активний(а)", "У відпустці", "У відставці", "Звільнений(а)" });
 
+        modelBuilder
+            .HasPostgresEnum<CaseStatus>("case_status");
+
+        modelBuilder.Entity<Client>(entity =>
+        {
+            entity.Property(e => e.RegistrationDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            
+            entity.ToTable(t =>
+            {
+                t.HasCheckConstraint("name_format", "first_name ~ '^[А-ЯІЇЄа-яіїє]+$' AND last_name ~ '^[А-ЯІЇЄа-яіїє]+$' AND (father_name IS NULL OR father_name ~ '^[А-ЯІЇЄа-яіїє]+$')");
+                t.HasCheckConstraint("phone_number_format", "phone_number ~ '^\\+380\\d{9}$'");
+                t.HasCheckConstraint("email_format", "email ~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'");
+                t.HasCheckConstraint("date_of_birth_format", "date_of_birth <= CURRENT_DATE");
+                t.HasCheckConstraint("region_format", "region ~ '^[А-ЯІЇЄа-яіїє]+$'");
+                t.HasCheckConstraint("city_format", "city ~ '^[А-ЯІЇЄа-яіїє\\-]+$'");
+                t.HasCheckConstraint("street_format", "street ~ '^[А-ЯІЇЄа-яіїє\\s\\-]+$'");
+                t.HasCheckConstraint("building_number_format", "building_number ~ '^[0-9/]+$'");
+                t.HasCheckConstraint("apartment_number_format", "apartment_number IS NULL OR apartment_number > 0");
+            });
+        });
+        
         modelBuilder.Entity<Case>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("case_pkey");
-
-            entity.ToTable("case");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CaseTypeId).HasColumnName("case_type_id");
-            entity.Property(e => e.ClientId).HasColumnName("client_id");
-            entity.Property(e => e.CloseDate).HasColumnName("close_date");
-            entity.Property(e => e.DeadlineDate).HasColumnName("deadline_date");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.DetectiveId).HasColumnName("detective_id");
             entity.Property(e => e.StartDate)
-                .HasDefaultValueSql("CURRENT_DATE")
-                .HasColumnName("start_date");
-            entity.Property(e => e.Title)
-                .HasMaxLength(255)
-                .HasColumnName("title");
+                .HasDefaultValueSql("CURRENT_DATE");
 
             entity.HasOne(d => d.CaseType).WithMany(p => p.Cases)
                 .HasForeignKey(d => d.CaseTypeId)
@@ -76,6 +89,15 @@ public partial class DetectiveAgencyDbContext : DbContext
             entity.HasOne(d => d.Detective).WithMany(p => p.Cases)
                 .HasForeignKey(d => d.DetectiveId)
                 .HasConstraintName("FK_case_detective_id");
+        });
+        
+        modelBuilder.Entity<CaseType>(entity =>
+        {
+            entity.ToTable(t =>
+            {
+                t.HasCheckConstraint("name_format", "name ~ '^[А-ЯІЇЄа-яіїє0-9\\s\\-\\.,:;/]+$'");
+                t.HasCheckConstraint("price_format", "price > 0");
+            });
         });
 
         modelBuilder.Entity<CaseSuspect>(entity =>
@@ -98,62 +120,6 @@ public partial class DetectiveAgencyDbContext : DbContext
                 .HasForeignKey(d => d.SuspectId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_case_suspect_suspect_id");
-        });
-
-        modelBuilder.Entity<CaseType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("case_type_pkey");
-
-            entity.ToTable("case_type");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name)
-                .HasMaxLength(100)
-                .HasColumnName("name");
-            entity.Property(e => e.Price)
-                .HasPrecision(10, 2)
-                .HasColumnName("price");
-        });
-
-        modelBuilder.Entity<Client>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("client_pkey");
-
-            entity.ToTable("client");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.ApartmentNumber).HasColumnName("apartment_number");
-            entity.Property(e => e.BuildingNumber)
-                .HasMaxLength(30)
-                .HasColumnName("building_number");
-            entity.Property(e => e.City)
-                .HasMaxLength(30)
-                .HasColumnName("city");
-            entity.Property(e => e.DateOfBirth).HasColumnName("date_of_birth");
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .HasColumnName("email");
-            entity.Property(e => e.FatherName)
-                .HasMaxLength(100)
-                .HasColumnName("father_name");
-            entity.Property(e => e.FirstName)
-                .HasMaxLength(100)
-                .HasColumnName("first_name");
-            entity.Property(e => e.LastName)
-                .HasMaxLength(100)
-                .HasColumnName("last_name");
-            entity.Property(e => e.PhoneNumber)
-                .HasMaxLength(20)
-                .HasColumnName("phone_number");
-            entity.Property(e => e.Region)
-                .HasMaxLength(30)
-                .HasColumnName("region");
-            entity.Property(e => e.RegistrationDate)
-                .HasDefaultValueSql("CURRENT_DATE")
-                .HasColumnName("registration_date");
-            entity.Property(e => e.Street)
-                .HasMaxLength(50)
-                .HasColumnName("street");
         });
 
         modelBuilder.Entity<Detective>(entity =>
@@ -325,3 +291,4 @@ public partial class DetectiveAgencyDbContext : DbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+
