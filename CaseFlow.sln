@@ -4,10 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaseFlow.UI", "CaseFlow.UI\CaseFlow.UI.csproj", "{344D13E5-87DA-4E0D-8E36-FBAFD702D7E4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A35917D8-461B-43E1-9DC5-AA4401D9D9B2} = {A35917D8-461B-43E1-9DC5-AA4401D9D9B2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaseFlow.DAL", "CaseFlow.DAL\CaseFlow.DAL.csproj", "{EDB367B4-0A05-4E32-B2F4-2A3E4ED655D0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaseFlow.BLL", "CaseFlow.BLL\CaseFlow.BLL.csproj", "{A35917D8-461B-43E1-9DC5-AA4401D9D9B2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EDB367B4-0A05-4E32-B2F4-2A3E4ED655D0} = {EDB367B4-0A05-4E32-B2F4-2A3E4ED655D0}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
