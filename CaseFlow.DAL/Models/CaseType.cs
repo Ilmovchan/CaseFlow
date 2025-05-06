@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace CaseFlow.DAL.Models;
@@ -12,9 +11,9 @@ public class CaseType
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("name")]
-    [MaxLength(100)]
-    public string? Name { get; set; }
+    [Column("name")] 
+    [MaxLength(100)] 
+    public string Name { get; set; } = null!;
     
     [Column("price")]
     [Precision(10,2)]

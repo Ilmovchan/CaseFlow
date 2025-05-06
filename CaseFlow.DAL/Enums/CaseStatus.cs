@@ -1,8 +1,15 @@
+using System.Runtime.Serialization;
+
 namespace CaseFlow.DAL.Enums;
 
 public enum CaseStatus
 {
-    Відкрито,
-    Закрито,
-    Призупинено,
+    [EnumMember(Value = "Відкрито")]
+    Opened,
+    
+    [EnumMember(Value = "Закрито")]
+    Closed,
+    
+    [EnumMember(Value = "Призупинено")]
+    Stopped,
 }

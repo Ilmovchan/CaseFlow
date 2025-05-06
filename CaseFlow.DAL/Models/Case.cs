@@ -11,40 +11,33 @@ public class Case
     [Column("id")]
     public int Id { get; set; }
 
-    [Required]
     [Column("case_type_id")]
     public int CaseTypeId { get; set; }
 
-    [Required]
     [Column("client_id")]
     public int ClientId { get; set; }
 
     [Column("detective_id")]
     public int? DetectiveId { get; set; }
 
-    [Required]
     [MaxLength(255)]
     [Column("title")]
     public string Title { get; set; } = null!;
 
-    [Required]
-    [Column("description")]
+    [Column("description")] 
     public string Description { get; set; } = null!;
 
-    [Required]
     [Column("start_date")]
     public DateOnly StartDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
-    [Required]
     [Column("deadline_date")]
     public DateOnly DeadlineDate { get; set; }
 
     [Column("close_date")]
     public DateOnly? CloseDate { get; set; }
 
-    [Required]
     [Column("status")]
-    public CaseStatus Status { get; set; } = CaseStatus.Відкрито;
+    public CaseStatus Status { get; set; } = CaseStatus.Opened;
 
     public CaseType? CaseType { get; set; }
     public Client? Client { get; set; }

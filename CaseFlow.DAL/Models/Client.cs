@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CaseFlow.DAL.Models;
@@ -17,18 +15,18 @@ public class Client
 
     [Column("building_number")]
     [MaxLength(30)]
-    public string? BuildingNumber { get; set; }
+    public string BuildingNumber { get; set; } = null!;
 
-    [Column("city")]
-    [MaxLength(30)]
-    public string? City { get; set; }
+    [Column("city")] 
+    [MaxLength(30)] 
+    public string City { get; set; } = null!;
 
-    [Column("date_of_birth")]
-    public DateOnly? DateOfBirth { get; set; }
+    [Column("date_of_birth")] 
+    public DateOnly DateOfBirth { get; set; }
 
-    [Column("email")]
-    [MaxLength(100)]
-    public string? Email { get; set; }
+    [Column("email")] 
+    [MaxLength(100)] 
+    public string Email { get; set; } = null!;
 
     [Column("father_name")]
     [MaxLength(100)]
@@ -36,26 +34,26 @@ public class Client
 
     [Column("first_name")]
     [MaxLength(100)]
-    public string? FirstName { get; set; }
+    public string FirstName { get; set; } = null!;
 
-    [Column("last_name")]
-    [MaxLength(100)]
-    public string? LastName { get; set; }
+    [Column("last_name")] 
+    [MaxLength(100)] 
+    public string LastName { get; set; } = null!;
 
     [Column("phone_number")]
     [MaxLength(20)]
-    public string? PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; } = null!;
 
-    [Column("region")]
-    [MaxLength(30)]
-    public string? Region { get; set; }
+    [Column("region")] 
+    [MaxLength(30)] 
+    public string Region { get; set; } = null!;
 
-    [Column("registration_date")] 
+    [Column("registration_date")]
     public DateTime RegistrationDate { get; set; } = DateTime.Now;
 
-    [Column("street")]
-    [MaxLength(50)]
-    public string? Street { get; set; }
-    
+    [Column("street")] 
+    [MaxLength(50)] 
+    public string Street { get; set; } = null!;
+
     public ICollection<Case>? Cases { get; set; }
 }
