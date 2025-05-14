@@ -47,10 +47,10 @@ public partial class DetectiveAgencyDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .HasPostgresEnum<DetectiveStatus>("detective_status");
-        
-        modelBuilder
-            .HasPostgresEnum<CaseStatus>("case_status");
+            .HasPostgresEnum<DetectiveStatus>("detective_status")
+            .HasPostgresEnum<CaseStatus>("case_status")
+            .HasPostgresEnum<EvidenceType>("evidence_type")
+            .HasPostgresEnum<ApprovalStatus>("expense_status");
 
         modelBuilder.Entity<Client>(entity =>
         {
@@ -136,21 +136,6 @@ public partial class DetectiveAgencyDbContext : DbContext
             });
         });
         
-        modelBuilder.Entity<CaseSuspect>(entity =>
-        {
-            entity.HasKey(e => new { e.SuspectId, e.CaseId });
-            
-            entity.HasOne(d => d.Case).WithMany(p => p.CaseSuspects)
-                .HasForeignKey(d => d.CaseId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_case_suspect_case_id");
-
-            entity.HasOne(d => d.Suspect).WithMany(p => p.CaseSuspects)
-                .HasForeignKey(d => d.SuspectId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_case_suspect_suspect_id");
-        });
-        
         modelBuilder.Entity<Detective>(entity =>
         {
             entity.Property(e => e.Status)
@@ -195,34 +180,56 @@ public partial class DetectiveAgencyDbContext : DbContext
         
         modelBuilder.Entity<Evidence>(entity =>
         {
-            entity.HasMany(d => d.Cases).WithMany(p => p.Evidences)
-                .UsingEntity<Dictionary<string, object>>(
-                    "CaseEvidence",
-                    r => r.HasOne<Case>().WithMany()
-                        .HasForeignKey("CaseId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_case_evidence_case_id"),
-                    l => l.HasOne<Evidence>().WithMany()
-                        .HasForeignKey("EvidenceId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_case_evidence_evidence_id"),
-                    j =>
-                    {
-                        j.HasKey("EvidenceId", "CaseId").HasName("case_evidence_pkey");
-                        j.ToTable("case_evidence");
-                        j.IndexerProperty<int>("EvidenceId").HasColumnName("evidence_id");
-                        j.IndexerProperty<int>("CaseId").HasColumnName("case_id");
-                    });
+            entity.Property(e => e.Region)
+                .HasDefaultValue("Не вказано");
 
             entity.ToTable(t =>
             {
                 t.HasCheckConstraint("type_format", 
                     @"type ~ '^[А-ЯІЇЄа-яіїє0-9 .,!?;:-]+$'");
-                
+        
                 t.HasCheckConstraint("collection_date_format", 
                     @"collection_date <= CURRENT_TIMESTAMP");
             });
         });
+
+        
+        modelBuilder.Entity<CaseSuspect>(entity =>
+        {
+            entity.HasKey(e => new { e.SuspectId, e.CaseId });
+            
+            entity.HasOne(d => d.Case).WithMany(p => p.CaseSuspects)
+                .HasForeignKey(d => d.CaseId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_case_suspect_case_id");
+
+            entity.HasOne(d => d.Suspect).WithMany(p => p.CaseSuspects)
+                .HasForeignKey(d => d.SuspectId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_case_suspect_suspect_id");
+            
+            entity.Property(e => e.ApprovalStatus)
+                .HasDefaultValue(ApprovalStatus.Draft);
+        });
+        
+        modelBuilder.Entity<CaseEvidence>(entity =>
+        {
+            entity.HasKey(e => new { e.EvidenceId, e.CaseId });
+            
+            entity.HasOne(d => d.Case).WithMany(p => p.CaseEvidences)
+                .HasForeignKey(d => d.CaseId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_case_evidence_case_id");
+            
+            entity.HasOne(d => d.Evidence).WithMany(p => p.CaseEvidences)
+                .HasForeignKey(d => d.EvidenceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_case_evidence_suspect_id");
+            
+            entity.Property(e => e.ApprovalStatus)
+                .HasDefaultValue(ApprovalStatus.Draft);
+        });
+
         
         modelBuilder.Entity<Expense>(entity =>
         {
@@ -242,6 +249,9 @@ public partial class DetectiveAgencyDbContext : DbContext
                 t.HasCheckConstraint("purpose_format", 
                     @"purpose ~ '^[А-ЯІЇЄа-яіїєA-Za-z0-9\s\-\.,:;’]+$'");
             });
+            
+            entity.Property(e => e.ApprovalStatus)
+                .HasDefaultValue(ApprovalStatus.Draft);
         });
         
         modelBuilder.Entity<Report>(entity =>
@@ -259,8 +269,26 @@ public partial class DetectiveAgencyDbContext : DbContext
                 t.HasCheckConstraint("date_format", 
                     @"report_date <= CURRENT_TIMESTAMP");
             });
+            
+            entity.Property(e => e.ApprovalStatus)
+                .HasDefaultValue(ApprovalStatus.Draft);
         });
 
+        modelBuilder.Entity<Evidence>(entity =>
+        {
+            entity.Property(e => e.Region)
+                .HasDefaultValue("Не вказано");
+            
+            entity.ToTable(t =>
+            {
+                t.HasCheckConstraint("type_format", 
+                    @"type ~ '^[А-ЯІЇЄа-яіїє0-9 .,!?;:-]+$'");
+        
+                t.HasCheckConstraint("collection_date_format", 
+                    @"collection_date <= CURRENT_TIMESTAMP");
+            });
+        });
+        
         modelBuilder.Entity<Suspect>(entity =>
         {
             entity.ToTable(t =>

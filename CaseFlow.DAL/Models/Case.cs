@@ -44,7 +44,7 @@ public class Case
     public Detective? Detective { get; set; }
 
     public ICollection<CaseSuspect>? CaseSuspects { get; set; }
+    public ICollection<CaseEvidence>? CaseEvidences { get; set; }
     public ICollection<Report>? Reports { get; set; }
     public ICollection<Expense>? Expenses { get; set; }
-    public ICollection<Evidence>? Evidences { get; set; }
 }

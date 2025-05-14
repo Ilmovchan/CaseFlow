@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CaseFlow.DAL.Enums;
+using CaseFlow.DAL.Interfaces;
 
 namespace CaseFlow.DAL.Models;
 
 [Table("report")]
-public class Report
+public class Report : IWorkflowEntity
 {
     [Key]
     [Column("id")]
@@ -21,6 +23,9 @@ public class Report
 
     [Column("comments")]
     public string? Comments { get; set; }
+    
+    [Column("approval_status")] 
+    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Draft;
 
     public Case Case { get; set; } = null!;
 }

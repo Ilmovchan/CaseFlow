@@ -1,11 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CaseFlow.DAL.Enums;
+using CaseFlow.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace CaseFlow.DAL.Models;
 
 [Table("expense")]
-public class Expense
+public class Expense : IWorkflowEntity
 {
     [Column("id")]
     public int Id { get; set; }
@@ -26,6 +28,9 @@ public class Expense
 
     [Column("annotation")]
     public string? Annotation { get; set; }
+
+    [Column("approval_status")] 
+    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Draft;
 
     public Case Case { get; set; } = null!;
 }
