@@ -14,19 +14,14 @@ public partial class DetectiveAgencyDbContext : DbContext
         : base(options)
     {
     }
-
-    #region ConnectionString
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=DetectiveAgencyDb;Username=postgres;Password=12345");
-
-    #endregion
     
     #region DbSet
 
     public virtual DbSet<Case> Cases { get; set; }
 
     public virtual DbSet<CaseSuspect> CaseSuspects { get; set; }
+
+    public virtual DbSet<CaseEvidence> CaseEvidences { get; set; }
 
     public virtual DbSet<CaseType> CaseTypes { get; set; }
 
@@ -50,7 +45,7 @@ public partial class DetectiveAgencyDbContext : DbContext
             .HasPostgresEnum<DetectiveStatus>("detective_status")
             .HasPostgresEnum<CaseStatus>("case_status")
             .HasPostgresEnum<EvidenceType>("evidence_type")
-            .HasPostgresEnum<ApprovalStatus>("expense_status");
+            .HasPostgresEnum<ApprovalStatus>("approval_status");
 
         modelBuilder.Entity<Client>(entity =>
         {
@@ -94,7 +89,9 @@ public partial class DetectiveAgencyDbContext : DbContext
         modelBuilder.Entity<Case>(entity =>
         {
             entity.Property(e => e.Status)
-                .HasDefaultValue(CaseStatus.Opened);
+                .HasConversion<string>()                       
+                .HasColumnType("case_status")                  
+                .HasDefaultValue(CaseStatus.Відкрито); 
             
             entity.Property(e => e.StartDate)
                 .HasDefaultValueSql("CURRENT_DATE");
@@ -210,6 +207,11 @@ public partial class DetectiveAgencyDbContext : DbContext
             
             entity.Property(e => e.ApprovalStatus)
                 .HasDefaultValue(ApprovalStatus.Draft);
+
+            entity.ToTable(t =>
+            {
+                t.HasTrigger("trg_prevent_last_case_suspect_unlink");
+            });
         });
         
         modelBuilder.Entity<CaseEvidence>(entity =>
@@ -228,6 +230,11 @@ public partial class DetectiveAgencyDbContext : DbContext
             
             entity.Property(e => e.ApprovalStatus)
                 .HasDefaultValue(ApprovalStatus.Draft);
+
+            entity.ToTable(t =>
+            {
+                t.HasTrigger("trg_prevent_last_case_evidence_unlink");
+            });
         });
 
         
@@ -272,21 +279,6 @@ public partial class DetectiveAgencyDbContext : DbContext
             
             entity.Property(e => e.ApprovalStatus)
                 .HasDefaultValue(ApprovalStatus.Draft);
-        });
-
-        modelBuilder.Entity<Evidence>(entity =>
-        {
-            entity.Property(e => e.Region)
-                .HasDefaultValue("Не вказано");
-            
-            entity.ToTable(t =>
-            {
-                t.HasCheckConstraint("type_format", 
-                    @"type ~ '^[А-ЯІЇЄа-яіїє0-9 .,!?;:-]+$'");
-        
-                t.HasCheckConstraint("collection_date_format", 
-                    @"collection_date <= CURRENT_TIMESTAMP");
-            });
         });
         
         modelBuilder.Entity<Suspect>(entity =>

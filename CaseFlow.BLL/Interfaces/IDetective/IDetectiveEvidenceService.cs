@@ -9,7 +9,9 @@ public interface IDetectiveEvidenceService
     Task<Evidence> UpdateEvidenceAsync(UpdateEvidenceDto dto, int detectiveId);
     Task DeleteEvidenceAsync(int evidenceId, int detectiveId);
     
-    Task<List<Evidence>> GetEvidencesAsync(int detectiveId);
+    Task<List<Evidence>> GetAssignedEvidencesAsync(int detectiveId);
+    Task<List<Evidence>> GetUnassignedEvidencesAsync(int detectiveId);
+    Task<List<Evidence>> GetAllEvidencesAsync(int detectiveId);
     Task<List<Evidence>> GetRejectedEvidencesAsync(int detectiveId);
     Task<List<Evidence>> GetApprovedEvidencesAsync(int detectiveId);
     Task<Evidence?> GetEvidenceAsync(int evidenceId, int detectiveId);

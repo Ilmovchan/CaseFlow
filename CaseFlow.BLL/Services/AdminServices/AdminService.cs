@@ -1,8 +1,9 @@
-using CaseFlow.BLL.Common;
+using AutoMapper;
 using CaseFlow.BLL.Dto.Case;
 using CaseFlow.BLL.Dto.CaseType;
 using CaseFlow.BLL.Dto.Client;
 using CaseFlow.BLL.Dto.Detective;
+using CaseFlow.BLL.Exceptions;
 using CaseFlow.BLL.Interfaces.IAdmin;
 using CaseFlow.DAL.Data;
 using CaseFlow.DAL.Enums;
@@ -11,336 +12,196 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CaseFlow.BLL.Services.AdminServices;
 
-public class AdminService : 
-    IAdminCaseService, IAdminClientService, IAdminDetectiveService, IAdminCaseTypeService, 
-    IAdminEvidenceService,IAdminExpenseService, IAdminReportService, IAdminSuspectService
-    
+public class AdminService(DetectiveAgencyDbContext context, IMapper mapper) :
+    IAdminCaseService, IAdminClientService, IAdminDetectiveService, IAdminCaseTypeService,
+    IAdminEvidenceService, IAdminExpenseService, IAdminReportService, IAdminSuspectService
+
 {
-    private readonly DetectiveAgencyDbContext _context;
-    
-    public AdminService(DetectiveAgencyDbContext context) 
-        =>  _context = context;
-    
     #region Case
     
     public async Task<Case> CreateCaseAsync(CreateCaseDto dto)
     {
-        var newCase = new Case
-        {
-            ClientId = dto.ClientId,
-            DetectiveId = dto.DetectiveId,
-            CaseTypeId = dto.CaseTypeId,
-            Title = dto.Title,
-            Description = dto.Description,
-            DeadlineDate = dto.DeadlineDate,
-        };
+        var caseEntity = mapper.Map<Case>(dto);
 
-        _context.Cases.Add(newCase);
-        await _context.SaveChangesAsync();
+        context.Cases.Add(caseEntity);
+        await context.SaveChangesAsync();
 
-        return newCase;
+        return caseEntity;
     }
     
     public async Task<Case> UpdateCaseAsync(UpdateCaseByAdminDto dto)
     {
-        var existingCase = (await _context.Cases.FindAsync(dto.Id))!
-            .EnsureExists("Case", dto.Id);
-        
-        if (dto.ClientId != null)
-            existingCase.ClientId = dto.ClientId.Value;
-        
-        if (dto.DetectiveId != null)
-            existingCase.DetectiveId = dto.DetectiveId.Value;
-        
-        if  (dto.CaseTypeId != null)
-            existingCase.CaseTypeId = dto.CaseTypeId.Value;
-        
-        if (dto.Title != null)
-            existingCase.Title = dto.Title;
-        
-        if (dto.Description != null)
-            existingCase.Description = dto.Description;
-        
-        if  (dto.DeadlineDate != null)
-            existingCase.DeadlineDate = dto.DeadlineDate.Value;
-        
-        if (dto.StartDate != null)
-            existingCase.StartDate = dto.StartDate.Value;
-        
-        if (dto.CloseDate != null)
-            existingCase.CloseDate = dto.CloseDate.Value;
-        
-        if (dto.Status != null)
-            existingCase.Status = dto.Status.Value;
+        var caseEntity = await context.Cases
+            .FindAsync(dto.Id) ?? throw new EntityNotFoundException("Case", dto.Id);
 
-        await _context.SaveChangesAsync();
-        return existingCase;
+        mapper.Map(dto, caseEntity);
+        await context.SaveChangesAsync();
+
+        return caseEntity;
     }
 
     public async Task DeleteCaseAsync(int caseId)
     {
-        var deletedCase = (await _context.Cases.FindAsync(caseId))!
-            .EnsureExists("Case", caseId);
+        var caseEntity = await context.Cases
+            .FindAsync(caseId) ?? throw new EntityNotFoundException("Case", caseId);
         
-        _context.Cases.Remove(deletedCase);
-        await _context.SaveChangesAsync();
+        context.Cases.Remove(caseEntity);
+        await context.SaveChangesAsync();
     }
 
-    public Task<Case?> GetCaseAsync(int caseId)
+    public async Task<Case?> GetCaseAsync(int caseId)
     {
-        return _context.Cases.FindAsync(caseId).AsTask();
+        return await context.Cases.FindAsync(caseId);
     }
 
-    public Task<List<Case>> GetCasesAsync()
+    public async Task<List<Case>> GetCasesAsync()
     {
-        return _context.Cases.ToListAsync();
+        return await context.Cases.ToListAsync();
     }
 
     #endregion
 
     #region Client
 
-        public async Task<Client> AddClientAsync(CreateClientDto dto)
+        public async Task<Client> CreateClientAsync(CreateClientDto dto)
     {
-        var newClient = new Client
-        {
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            FatherName = dto.FatherName,
-            PhoneNumber = dto.PhoneNumber, 
-            Email = dto.Email,
-            DateOfBirth = dto.DateOfBirth,
-            Region = dto.Region,
-            City = dto.City,
-            Street = dto.Street,
-            BuildingNumber = dto.BuildingNumber,
-            ApartmentNumber = dto.ApartmentNumber,
-        };
+        var clientEntity = mapper.Map<Client>(dto);
 
-        _context.Clients.Add(newClient);
-        await _context.SaveChangesAsync();
+        context.Clients.Add(clientEntity);
+        await context.SaveChangesAsync();
 
-        return newClient;
+        return clientEntity;
     }
 
     public async Task<Client> UpdateClientAsync(UpdateClientDto dto)
     {
-        var existingClient = (await _context.Clients.FindAsync(dto.Id))!
-            .EnsureExists("Client", dto.Id);
-        
-        if (dto.FirstName != null)
-            existingClient.FirstName = dto.FirstName;
-        
-        if (dto.LastName != null)
-            existingClient.LastName = dto.LastName;
-        
-        if (dto.FatherName != null)
-            existingClient.FatherName = dto.FatherName;
+        var clientEntity = await context.Clients
+            .FindAsync(dto.Id) ?? throw new EntityNotFoundException("Client", dto.Id);
 
-        if (dto.PhoneNumber != null)
-            existingClient.PhoneNumber = dto.PhoneNumber;
+        mapper.Map(dto, clientEntity);
+        await context.SaveChangesAsync();
         
-        if (dto.Email != null)
-            existingClient.Email = dto.Email;
-        
-        if (dto.DateOfBirth != null)
-            existingClient.DateOfBirth = dto.DateOfBirth.Value;
-        
-        if (dto.Region != null)
-            existingClient.Region = dto.Region;
-        
-        if (dto.City != null)
-            existingClient.City = dto.City;
-        
-        if (dto.Street != null)
-            existingClient.Street = dto.Street;
-        
-        if (dto.BuildingNumber != null)
-            existingClient.BuildingNumber = dto.BuildingNumber;
-        
-        if (dto.ApartmentNumber != null)
-            existingClient.ApartmentNumber = dto.ApartmentNumber;
-        
-        await _context.SaveChangesAsync();
-        return existingClient;
+        return clientEntity;
     }
 
     public async Task DeleteClientAsync(int clientId)
     {
-        var deletedClient = (await _context.Clients.FindAsync(clientId))!
-            .EnsureExists("Client", clientId);
-            
-        _context.Clients.Remove(deletedClient);
-        await _context.SaveChangesAsync();
+        var clientEntity = await context.Clients
+            .FindAsync(clientId) ?? throw new EntityNotFoundException("Client", clientId);
+        
+        context.Clients.Remove(clientEntity);
+        await context.SaveChangesAsync();
     }
 
-    public Task<Client?> GetClientAsync(int clientId)
+    public async Task<Client?> GetClientAsync(int clientId)
     {
-        return _context.Clients.FindAsync(clientId).AsTask();
+        return await context.Clients.FindAsync(clientId);
     }
 
-    public Task<List<Client>> GetClientsAsync()
+    public async Task<List<Client>> GetClientsAsync()
     {
-        return  _context.Clients.ToListAsync();
+        return await context.Clients.ToListAsync();
     }
 
     #endregion
     
     #region Detective
     
-    public async Task<Detective> AddDetectiveAsync(CreateDetectiveDto dto)
-    { 
-        var newDetective = new Detective 
-        {
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            FatherName = dto.FatherName,
-            PhoneNumber = dto.PhoneNumber,
-            Email = dto.Email,
-            DateOfBirth = dto.DateOfBirth,
-            Region = dto.Region,
-            City = dto.City,
-            Street = dto.Street,
-            BuildingNumber = dto.BuildingNumber,
-            ApartmentNumber = dto.ApartmentNumber,
-            HireDate = dto.HireDate,
-            Salary = dto.Salary,
-            PersonalNotes = dto.PersonalNotes,
-        };
+    public async Task<Detective> CreateDetectiveAsync(CreateDetectiveDto dto)
+    {
+        var detectiveEntity = mapper.Map<Detective>(dto);
 
-        _context.Detectives.Add(newDetective);
-        await _context.SaveChangesAsync();
+        context.Detectives.Add(detectiveEntity);
+        await context.SaveChangesAsync();
 
-        return newDetective;
+        return detectiveEntity;
     }
 
     public async Task<Detective> UpdateDetectiveAsync(UpdateDetectiveDto dto)
     {
-        var existingDetective = (await _context.Detectives.FindAsync(dto.Id))!
-            .EnsureExists("Detective", dto.Id);
+        var existingDetective = await context.Detectives
+            .FindAsync(dto.Id) ?? throw new EntityNotFoundException("Detective", dto.Id);
 
-        if (dto.FirstName != null)
-            existingDetective.FirstName = dto.FirstName;
-
-        if (dto.LastName != null)
-            existingDetective.LastName = dto.LastName;
-
-        if (dto.FatherName != null)
-            existingDetective.FatherName = dto.FatherName;
-
-        if (dto.PhoneNumber != null)
-            existingDetective.PhoneNumber = dto.PhoneNumber;
-
-        if (dto.Email != null)
-            existingDetective.Email = dto.Email;
-
-        if (dto.DateOfBirth != null)
-            existingDetective.DateOfBirth = dto.DateOfBirth.Value;
-
-        if (dto.Region != null)
-            existingDetective.Region = dto.Region;
+        mapper.Map(dto, existingDetective);
+        await context.SaveChangesAsync();
         
-        if (dto.City != null)
-            existingDetective.City = dto.City;
-        
-        if (dto.Street != null)
-            existingDetective.Street = dto.Street;
-        
-        if (dto.BuildingNumber != null)
-            existingDetective.BuildingNumber = dto.BuildingNumber;
-        
-        if (dto.ApartmentNumber != null)
-            existingDetective.ApartmentNumber = dto.ApartmentNumber;
-        
-        if (dto.HireDate != null)
-            existingDetective.HireDate = dto.HireDate.Value;
-        
-        if (dto.Salary != null)
-            existingDetective.Salary = dto.Salary.Value;
-        
-        if (dto.PersonalNotes != null)
-            existingDetective.PersonalNotes = dto.PersonalNotes;
-        
-        if (dto.Status != null)
-            existingDetective.Status = dto.Status.Value;
-
-        await _context.SaveChangesAsync();
         return existingDetective;
     }
 
     public async Task DeleteDetectiveAsync(int detectiveId)
     {
-        var deletedDetective = (await _context.Detectives.FindAsync(detectiveId))!
-            .EnsureExists("Detective", detectiveId);
+        var deletedDetective = await context.Detectives
+            .FindAsync(detectiveId) ?? throw new EntityNotFoundException("Detective", detectiveId);
 
-        _context.Detectives.Remove(deletedDetective);
-        await _context.SaveChangesAsync();
+        context.Detectives.Remove(deletedDetective);
+        await context.SaveChangesAsync();
     }
 
-    public Task<Detective?> GetDetectiveAsync(int detectiveId)
+    public async Task<Detective?> GetDetectiveAsync(int detectiveId)
     {
-        return _context.Detectives.FindAsync(detectiveId).AsTask();
+        return await context.Detectives.FindAsync(detectiveId);
     }
 
-    public Task<List<Detective>> GetDetectivesAsync()
+    public async Task<List<Detective>> GetDetectivesAsync()
     {
-        return _context.Detectives.ToListAsync();
+        return await context.Detectives.ToListAsync();
     }
 
-    public Task<List<Detective>> GetUnassignedDetectivesAsync()
+    public async Task<List<Detective>> GetUnassignedDetectivesAsync()
     {
-        return _context.Detectives
-            .Where(d => !_context.Cases.Any(c => c.DetectiveId == d.Id))
+        return await context.Detectives
+            .Where(d => !context.Cases.Any(c => c.DetectiveId == d.Id))
             .ToListAsync();
     }
 
     public async Task<(Case, Detective)> AssignDetectiveAsync(int caseId, int detectiveId)
     {
-        var caseEntity = (await _context.Cases.FindAsync(caseId))!
-            .EnsureExists("Case", caseId);
-        var detectiveEntity = (await _context.Detectives.FindAsync(detectiveId))!
-            .EnsureExists("Detective", detectiveId);
+        var caseEntity = await context.Cases
+            .FindAsync(caseId) ?? throw new EntityNotFoundException("Case", caseId);
         
-        caseEntity!.DetectiveId = detectiveId;
-        await _context.SaveChangesAsync();
+        var detectiveEntity = await context.Detectives
+            .FindAsync(detectiveId) ?? throw new EntityNotFoundException("Detective", detectiveId);
+        
+        caseEntity.DetectiveId = detectiveId;
+        await context.SaveChangesAsync();
 
         return (caseEntity, detectiveEntity);
     }
 
     public async Task DismissDetectiveAsync(int caseId)
     {
-        var updatedCase = (await _context.Cases.FindAsync(caseId))!
-            .EnsureExists("Case", caseId);
+        var caseEntity = await context.Cases
+            .FindAsync(caseId) ?? throw new EntityNotFoundException("Case", caseId);
 
-        updatedCase.DetectiveId = null;
-        await _context.SaveChangesAsync();
+        caseEntity.DetectiveId = null;
+        await context.SaveChangesAsync();
     }
 
     #endregion
 
     #region Evidence
     
-    public Task<Evidence?> GetEvidenceAsync(int evidenceId)
+    public async Task<Evidence?> GetEvidenceAsync(int evidenceId)
     {
-        return _context.Evidences.FindAsync(evidenceId).AsTask();
+        return await context.Evidences.FindAsync(evidenceId);
     }
 
-    public Task<List<Evidence>> GetEvidencesFromCaseAsync(int caseId)
+    public async Task<List<Evidence>> GetEvidencesFromCaseAsync(int caseId)
     {
-        return _context.Set<CaseEvidence>()
+        return await context.CaseEvidences
             .Where(ce => ce.CaseId == caseId)
             .Select(ce => ce.Evidence)
             .ToListAsync();
     }
 
-    public Task<List<Evidence>> GetEvidencesAsync()
+    public async Task<List<Evidence>> GetEvidencesAsync()
     {
-        return _context.Evidences.ToListAsync();
+        return await context.Evidences.ToListAsync();
     }
 
-    public Task<List<Evidence>> GetPendingEvidencesAsync()
+    public async Task<List<Evidence>> GetPendingEvidencesAsync()
     {
-        return _context.Set<CaseEvidence>()
+        return await context.CaseEvidences
             .Where(ce => ce.ApprovalStatus == ApprovalStatus.Submitted)
             .Select(ce => ce.Evidence)
             .ToListAsync();
@@ -350,26 +211,26 @@ public class AdminService :
     
     #region Expense
     
-    public Task<Expense?> GetExpenseAsync(int expenseId)
+    public async Task<Expense?> GetExpenseAsync(int expenseId)
     {
-        return _context.Expenses.FindAsync(expenseId).AsTask();
+        return await context.Expenses.FindAsync(expenseId);
     }
 
-    public Task<List<Expense>> GetExpensesFromCaseAsync(int caseId)
+    public async Task<List<Expense>> GetExpensesFromCaseAsync(int caseId)
     {
-        return _context.Expenses
+        return await context.Expenses
             .Where(e => e.CaseId == caseId)
             .ToListAsync();
     }
 
-    public Task<List<Expense>> GetExpensesAsync()
+    public async Task<List<Expense>> GetExpensesAsync()
     {
-        return  _context.Expenses.ToListAsync();
+        return await context.Expenses.ToListAsync();
     }
 
-    public Task<List<Expense>> GetPendingExpensesAsync()
+    public async Task<List<Expense>> GetPendingExpensesAsync()
     {
-        return _context.Expenses
+        return await context.Expenses
             .Where(e => e.ApprovalStatus == ApprovalStatus.Submitted)
             .ToListAsync();
     }
@@ -378,26 +239,26 @@ public class AdminService :
 
     #region Report
     
-    public Task<Report?> GetReportAsync(int reportId)
+    public async Task<Report?> GetReportAsync(int reportId)
     {
-        return _context.Reports.FindAsync(reportId).AsTask();
+        return await context.Reports.FindAsync(reportId);
     }
 
-    public Task<List<Report>> GetReportsFromCaseAsync(int caseId)
+    public async Task<List<Report>> GetReportsFromCaseAsync(int caseId)
     {
-        return _context.Reports
+        return await context.Reports
             .Where(r => r.CaseId == caseId)
             .ToListAsync();
     }
 
-    public Task<List<Report>> GetReportsAsync()
+    public async Task<List<Report>> GetReportsAsync()
     {
-        return  _context.Reports.ToListAsync();
+        return await context.Reports.ToListAsync();
     }
 
-    public Task<List<Report>> GetPendingReportsAsync()
+    public async Task<List<Report>> GetPendingReportsAsync()
     {
-        return _context.Reports
+        return await context.Reports
             .Where(r => r.ApprovalStatus == ApprovalStatus.Submitted)
             .ToListAsync();
     }
@@ -406,27 +267,27 @@ public class AdminService :
 
     #region Suspect
     
-    public Task<Suspect?> GetSuspectAsync(int suspectId)
+    public async Task<Suspect?> GetSuspectAsync(int suspectId)
     {
-        return _context.Suspects.FindAsync(suspectId).AsTask();
+        return await context.Suspects.FindAsync(suspectId);
     }
 
-    public Task<List<Suspect>> GetSuspectsFromCaseAsync(int caseId)
+    public async Task<List<Suspect>> GetSuspectsFromCaseAsync(int caseId)
     {
-        return _context.Set<CaseSuspect>()
+        return await context.CaseSuspects
             .Where(cs => cs.CaseId == caseId)
             .Select(cs => cs.Suspect)
             .ToListAsync();
     }
 
-    public Task<List<Suspect>> GetSuspectsAsync()
+    public async Task<List<Suspect>> GetSuspectsAsync()
     {
-        return _context.Suspects.ToListAsync();
+        return await context.Suspects.ToListAsync();
     }
 
-    public Task<List<Suspect>> GetPendingSuspectsAsync()
+    public async Task<List<Suspect>> GetPendingSuspectsAsync()
     {
-        return _context.Set<CaseSuspect>()
+        return await context.CaseSuspects
             .Where(cs => cs.ApprovalStatus == ApprovalStatus.Submitted)
             .Select(cs => cs.Suspect)
             .ToListAsync();
@@ -438,45 +299,37 @@ public class AdminService :
     
     public async Task<CaseType> CreateCaseTypeAsync(CreateCaseTypeDto dto)
     {
-        var newCaseType = new CaseType
-        {
-            Name = dto.Name,
-            Price = dto.Price,
-        };
+        var caseTypeEntity = mapper.Map<CaseType>(dto);
 
-        _context.Add(newCaseType);
-        await _context.SaveChangesAsync();
+        context.Add(caseTypeEntity);
+        await context.SaveChangesAsync();
         
-        return newCaseType;
+        return caseTypeEntity;
     }
 
     public async Task<CaseType> UpdateCaseTypeAsync(UpdateCaseTypeDto dto)
     {
-        var existingCaseType = (await _context.CaseTypes.FindAsync(dto.Id))!
-            .EnsureExists("CaseType", dto.Id);
-        
-        if (dto.Name != null)
-            existingCaseType.Name = dto.Name;
+        var caseTypeEntity = await context.CaseTypes
+            .FindAsync(dto.Id) ?? throw new EntityNotFoundException("CaseType", dto.Id);
 
-        if (dto.Price != null)
-            existingCaseType.Price = dto.Price.Value;
+        mapper.Map(dto, caseTypeEntity);
+        await context.SaveChangesAsync();
         
-        await _context.SaveChangesAsync();
-        return existingCaseType;
+        return caseTypeEntity;
     }
 
     public async Task DeleteCaseTypeAsync(int caseTypeId)
     {
-        var deletedCaseType = (await _context.CaseTypes.FindAsync(caseTypeId))!
-            .EnsureExists("CaseType", caseTypeId);
+        var caseTypeEntity = await context.CaseTypes
+            .FindAsync(caseTypeId) ?? throw new EntityNotFoundException("CaseType", caseTypeId);
             
-        _context.CaseTypes.Remove(deletedCaseType);
-        await _context.SaveChangesAsync();
+        context.CaseTypes.Remove(caseTypeEntity);
+        await context.SaveChangesAsync();
     }
 
-    public Task<List<CaseType>> GetCaseTypesAsync()
+    public async Task<List<CaseType>> GetCaseTypesAsync()
     {
-        return _context.CaseTypes.ToListAsync();
+        return await context.CaseTypes.ToListAsync();
     }
     
     #endregion

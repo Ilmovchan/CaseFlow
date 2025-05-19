@@ -4,6 +4,8 @@ namespace CaseFlow.BLL.Dto.Expense;
 
 public class UpdateExpenseDto
 {
+    public int Id { get; init; }
+    
     public DateTime DateTime { get; set; }
     public string Purpose { get; set; } = null!;
     public decimal Amount { get; set; }

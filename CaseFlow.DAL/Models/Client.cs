@@ -49,7 +49,7 @@ public class Client
     public string Region { get; set; } = null!;
 
     [Column("registration_date")]
-    public DateTime RegistrationDate { get; set; } = DateTime.Now;
+    public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
 
     [Column("street")] 
     [MaxLength(50)] 

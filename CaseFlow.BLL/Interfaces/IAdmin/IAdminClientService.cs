@@ -5,7 +5,7 @@ namespace CaseFlow.BLL.Interfaces.IAdmin;
 
 public interface IAdminClientService
 {
-    Task<Client> AddClientAsync(CreateClientDto dto);
+    Task<Client> CreateClientAsync(CreateClientDto dto);
     Task<Client> UpdateClientAsync(UpdateClientDto dto);
     Task DeleteClientAsync(int clientId);
     

@@ -10,7 +10,7 @@ public interface IDetectiveReportService
     
     Task<List<Report>> GetReportsAsync(int detectiveId);
     Task<List<Report>> GetSubmittedReportsAsync(int detectiveId);
-    Task<List<Report>> GetDeclinedReportsAsync(int detectiveId);
+    Task<List<Report>> GetRejectedReportsAsync(int detectiveId);
     Task<List<Report>> GetApprovedReportsAsync(int detectiveId);
     Task<Report?> GetReportAsync(int reportId, int detectiveId);
 }

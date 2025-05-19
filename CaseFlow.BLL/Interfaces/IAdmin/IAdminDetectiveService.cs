@@ -5,7 +5,7 @@ namespace CaseFlow.BLL.Interfaces.IAdmin;
 
 public interface IAdminDetectiveService
 {
-    Task<Detective> AddDetectiveAsync(CreateDetectiveDto dto);
+    Task<Detective> CreateDetectiveAsync(CreateDetectiveDto dto);
     Task<Detective> UpdateDetectiveAsync(UpdateDetectiveDto dto);
     Task DeleteDetectiveAsync(int detectiveId);
     
