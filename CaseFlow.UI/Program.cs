@@ -1,5 +1,4 @@
-﻿using CaseFlow.BLL.Services.AdminServices;
-using CaseFlow.BLL.Services.DetectiveServices;
+﻿using CaseFlow.BLL.Services;
 using Microsoft.Extensions.DependencyInjection;
 using CaseFlow.DAL.Data;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +18,8 @@ services.AddScoped<AdminService>();
 services.AddTransient<DetectiveService>();
 
 services.AddAutoMapper(typeof(DetectiveService).Assembly);
+services.AddAutoMapper(typeof(AdminService).Assembly);
+
 
 var serviceProvider = services.BuildServiceProvider();
 

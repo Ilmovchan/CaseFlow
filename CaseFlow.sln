@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaseFlow.BLL", "CaseFlow.BL
 		{EDB367B4-0A05-4E32-B2F4-2A3E4ED655D0} = {EDB367B4-0A05-4E32-B2F4-2A3E4ED655D0}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaseFlow.API", "CaseFlow.API\CaseFlow.API.csproj", "{BA3DF0E8-5075-49D6-9C2C-5B9F6DDCB3E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{A35917D8-461B-43E1-9DC5-AA4401D9D9B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A35917D8-461B-43E1-9DC5-AA4401D9D9B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A35917D8-461B-43E1-9DC5-AA4401D9D9B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA3DF0E8-5075-49D6-9C2C-5B9F6DDCB3E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA3DF0E8-5075-49D6-9C2C-5B9F6DDCB3E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA3DF0E8-5075-49D6-9C2C-5B9F6DDCB3E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA3DF0E8-5075-49D6-9C2C-5B9F6DDCB3E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -11,7 +11,7 @@ using CaseFlow.DAL.Enums;
 using CaseFlow.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CaseFlow.BLL.Services.DetectiveServices;
+namespace CaseFlow.BLL.Services;
 
 public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) :
     IDetectiveCaseService, IDetectiveClientService,

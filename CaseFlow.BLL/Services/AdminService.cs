@@ -5,14 +5,15 @@ using CaseFlow.BLL.Dto.Client;
 using CaseFlow.BLL.Dto.Detective;
 using CaseFlow.BLL.Exceptions;
 using CaseFlow.BLL.Interfaces.IAdmin;
+using CaseFlow.BLL.Interfaces.Shared;
 using CaseFlow.DAL.Data;
 using CaseFlow.DAL.Enums;
 using CaseFlow.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CaseFlow.BLL.Services.AdminServices;
+namespace CaseFlow.BLL.Services;
 
-public class AdminService(DetectiveAgencyDbContext context, IMapper mapper) :
+public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPostgresUserService userService) :
     IAdminCaseService, IAdminClientService, IAdminDetectiveService, IAdminCaseTypeService,
     IAdminEvidenceService, IAdminExpenseService, IAdminReportService, IAdminSuspectService
 
@@ -114,6 +115,12 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper) :
         context.Detectives.Add(detectiveEntity);
         await context.SaveChangesAsync();
 
+        var lastName = dto.LastName.ToLower();
+        var username = $"detective_{detectiveEntity.Id}_{lastName}";
+        var password = GeneratePassword();
+
+        await userService.CreateUserAsync(username, password, "detective");
+
         return detectiveEntity;
     }
 
@@ -122,10 +129,37 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper) :
         var existingDetective = await context.Detectives
             .FindAsync(dto.Id) ?? throw new EntityNotFoundException("Detective", dto.Id);
 
+        var oldLastName = existingDetective.LastName;
+        var oldStatus = existingDetective.Status;
+
         mapper.Map(dto, existingDetective);
         await context.SaveChangesAsync();
+
+        if (!string.Equals(oldLastName, existingDetective.LastName, StringComparison.OrdinalIgnoreCase))
+        {
+            var oldUsername = BuildUsername(oldLastName, existingDetective.Id);
+            var newUsername = BuildUsername(existingDetective.LastName, existingDetective.Id);
+            await userService.UpdateUsernameAsync(oldUsername, newUsername);
+        }
         
+        if (existingDetective.Status != oldStatus)
+        {
+            var username = BuildUsername(existingDetective.LastName, existingDetective.Id);
+
+            switch (existingDetective.Status)
+            {
+                case DetectiveStatus.Active or DetectiveStatus.OnVacation:
+                    await userService.EnableUserAsync(username);
+                    break;
+                case DetectiveStatus.Fired or DetectiveStatus.Retired:
+                    await userService.DisableUserAsync(username);
+                    break;
+            }
+        }
+
         return existingDetective;
+
+        string BuildUsername(string lastName, int id) => $"detective_{id}_{lastName.ToLower()}";
     }
 
     public async Task DeleteDetectiveAsync(int detectiveId)
@@ -135,6 +169,8 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper) :
 
         context.Detectives.Remove(deletedDetective);
         await context.SaveChangesAsync();
+
+        await userService.DeleteUserAsync($"detective_{detectiveId}_{deletedDetective.LastName}");
     }
 
     public async Task<Detective?> GetDetectiveAsync(int detectiveId)
@@ -333,4 +369,24 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper) :
     }
     
     #endregion
+    
+    private string GeneratePassword()
+    {
+        var rand = new Random();
+        var chars = new List<char>();
+        
+        for (var i = 0; i < rand.Next(1, 5); i++)
+            chars.Add((char)rand.Next('0', '9' + 1));
+        
+        for (var i = 0; i < rand.Next(1, 5); i++)
+            chars.Add((char)rand.Next('A', 'Z' + 1));
+        
+        for (var i = 0; i < rand.Next(1, 3); i++)
+            chars.Add((char)rand.Next('a', 'z' + 1));
+        
+        while (chars.Count < 8)
+            chars.Add((char)rand.Next('0', '9' + 1));
+        
+        return new string(chars.OrderBy(_ => rand.Next()).ToArray());
+    }
 }
