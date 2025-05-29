@@ -3,11 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaseFlow.UI", "CaseFlow.UI\CaseFlow.UI.csproj", "{344D13E5-87DA-4E0D-8E36-FBAFD702D7E4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A35917D8-461B-43E1-9DC5-AA4401D9D9B2} = {A35917D8-461B-43E1-9DC5-AA4401D9D9B2}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaseFlow.DAL", "CaseFlow.DAL\CaseFlow.DAL.csproj", "{EDB367B4-0A05-4E32-B2F4-2A3E4ED655D0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaseFlow.BLL", "CaseFlow.BLL\CaseFlow.BLL.csproj", "{A35917D8-461B-43E1-9DC5-AA4401D9D9B2}"
@@ -15,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaseFlow.BLL", "CaseFlow.BL
 		{EDB367B4-0A05-4E32-B2F4-2A3E4ED655D0} = {EDB367B4-0A05-4E32-B2F4-2A3E4ED655D0}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaseFlow.API", "CaseFlow.API\CaseFlow.API.csproj", "{5FE2859C-337E-40E6-ABDB-C20A275DE08B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaseFlow.API", "CaseFlow.API\CaseFlow.API.csproj", "{A0A6D60C-F80E-4A6F-9C98-E0B405041F91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +18,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{344D13E5-87DA-4E0D-8E36-FBAFD702D7E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{344D13E5-87DA-4E0D-8E36-FBAFD702D7E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{344D13E5-87DA-4E0D-8E36-FBAFD702D7E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{344D13E5-87DA-4E0D-8E36-FBAFD702D7E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EDB367B4-0A05-4E32-B2F4-2A3E4ED655D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EDB367B4-0A05-4E32-B2F4-2A3E4ED655D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDB367B4-0A05-4E32-B2F4-2A3E4ED655D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,10 +26,10 @@ Global
 		{A35917D8-461B-43E1-9DC5-AA4401D9D9B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A35917D8-461B-43E1-9DC5-AA4401D9D9B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A35917D8-461B-43E1-9DC5-AA4401D9D9B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5FE2859C-337E-40E6-ABDB-C20A275DE08B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5FE2859C-337E-40E6-ABDB-C20A275DE08B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5FE2859C-337E-40E6-ABDB-C20A275DE08B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5FE2859C-337E-40E6-ABDB-C20A275DE08B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0A6D60C-F80E-4A6F-9C98-E0B405041F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0A6D60C-F80E-4A6F-9C98-E0B405041F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0A6D60C-F80E-4A6F-9C98-E0B405041F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0A6D60C-F80E-4A6F-9C98-E0B405041F91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
