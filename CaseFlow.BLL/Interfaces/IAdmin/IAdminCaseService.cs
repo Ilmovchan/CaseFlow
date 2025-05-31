@@ -6,7 +6,7 @@ namespace CaseFlow.BLL.Interfaces.IAdmin;
 public interface IAdminCaseService
 {
     Task<Case> CreateCaseAsync(CreateCaseDto dto);
-    Task<Case> UpdateCaseAsync(UpdateCaseByAdminDto dto);
+    Task<Case> UpdateCaseAsync(int id, UpdateCaseByAdminDto dto);
     Task DeleteCaseAsync(int caseId);
     
     Task<Case?> GetCaseAsync(int caseId);

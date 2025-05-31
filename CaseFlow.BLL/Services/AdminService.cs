@@ -30,10 +30,10 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
         return caseEntity;
     }
     
-    public async Task<Case> UpdateCaseAsync(UpdateCaseByAdminDto dto)
+    public async Task<Case> UpdateCaseAsync(int id, UpdateCaseByAdminDto dto)
     {
         var caseEntity = await context.Cases
-            .FindAsync(dto.Id) ?? throw new EntityNotFoundException("Case", dto.Id);
+            .FindAsync(id) ?? throw new EntityNotFoundException("Case", id);
 
         mapper.Map(dto, caseEntity);
         await context.SaveChangesAsync();
@@ -43,10 +43,21 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
 
     public async Task DeleteCaseAsync(int caseId)
     {
-        var caseEntity = await context.Cases
-            .FindAsync(caseId) ?? throw new EntityNotFoundException("Case", caseId);
-        
+        var caseEntity = await context.Cases.FindAsync(caseId)
+                         ?? throw new EntityNotFoundException("Case", caseId);
+
+        context.CaseEvidences.RemoveRange(
+            await context.CaseEvidences
+                .Where(ce => ce.CaseId == caseId)
+                .ToListAsync());
+
+        context.CaseSuspects.RemoveRange(
+            await context.CaseSuspects
+                .Where(cs => cs.CaseId == caseId)
+                .ToListAsync());
+
         context.Cases.Remove(caseEntity);
+
         await context.SaveChangesAsync();
     }
 
@@ -74,10 +85,10 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
         return clientEntity;
     }
 
-    public async Task<Client> UpdateClientAsync(UpdateClientDto dto)
+    public async Task<Client> UpdateClientAsync(int id, UpdateClientDto dto)
     {
         var clientEntity = await context.Clients
-            .FindAsync(dto.Id) ?? throw new EntityNotFoundException("Client", dto.Id);
+            .FindAsync(id) ?? throw new EntityNotFoundException("Client", id);
 
         mapper.Map(dto, clientEntity);
         await context.SaveChangesAsync();
@@ -124,10 +135,10 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
         return detectiveEntity;
     }
 
-    public async Task<Detective> UpdateDetectiveAsync(UpdateDetectiveDto dto)
+    public async Task<Detective> UpdateDetectiveAsync(int id, UpdateDetectiveDto dto)
     {
         var existingDetective = await context.Detectives
-            .FindAsync(dto.Id) ?? throw new EntityNotFoundException("Detective", dto.Id);
+            .FindAsync(id) ?? throw new EntityNotFoundException("Detective", id);
 
         var oldLastName = existingDetective.LastName;
         var oldStatus = existingDetective.Status;
@@ -159,7 +170,7 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
 
         return existingDetective;
 
-        string BuildUsername(string lastName, int id) => $"detective_{id}_{lastName.ToLower()}";
+        string BuildUsername(string lastName, int dId) => $"detective_{dId}_{lastName.ToLower()}";
     }
 
     public async Task DeleteDetectiveAsync(int detectiveId)
@@ -343,10 +354,10 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
         return caseTypeEntity;
     }
 
-    public async Task<CaseType> UpdateCaseTypeAsync(UpdateCaseTypeDto dto)
+    public async Task<CaseType> UpdateCaseTypeAsync(int id, UpdateCaseTypeDto dto)
     {
         var caseTypeEntity = await context.CaseTypes
-            .FindAsync(dto.Id) ?? throw new EntityNotFoundException("CaseType", dto.Id);
+            .FindAsync(id) ?? throw new EntityNotFoundException("CaseType", id);
 
         mapper.Map(dto, caseTypeEntity);
         await context.SaveChangesAsync();

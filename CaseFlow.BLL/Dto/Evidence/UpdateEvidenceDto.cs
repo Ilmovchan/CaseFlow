@@ -4,8 +4,6 @@ namespace CaseFlow.BLL.Dto.Evidence;
 
 public class UpdateEvidenceDto
 {
-    public int Id { get; init; }
-
     public EvidenceType? Type { get; set; }
     public string? Description { get; set; }
     public DateTime? CollectionDate { get; set; }

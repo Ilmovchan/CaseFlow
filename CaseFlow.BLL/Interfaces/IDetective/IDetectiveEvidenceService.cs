@@ -6,7 +6,7 @@ namespace CaseFlow.BLL.Interfaces.IDetective;
 public interface IDetectiveEvidenceService
 {
     Task<Evidence> CreateEvidenceAsync(int caseId, CreateEvidenceDto dto, int detectiveId);
-    Task<Evidence> UpdateEvidenceAsync(UpdateEvidenceDto dto, int detectiveId);
+    Task<Evidence> UpdateEvidenceAsync(int evidenceId, UpdateEvidenceDto dto, int detectiveId);
     Task DeleteEvidenceAsync(int evidenceId, int detectiveId);
     
     Task<List<Evidence>> GetAssignedEvidencesAsync(int detectiveId);

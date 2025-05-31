@@ -6,7 +6,7 @@ namespace CaseFlow.BLL.Interfaces.IDetective;
 public interface IDetectiveSuspectService
 {
     Task<Suspect> CreateSuspectAsync(int caseId, CreateSuspectDto dto, int detectiveId);
-    Task<Suspect> UpdateSuspectAsync(UpdateSuspectDto dto, int detectiveId);
+    Task<Suspect> UpdateSuspectAsync(int suspectId, UpdateSuspectDto dto, int detectiveId);
     Task DeleteSuspectAsync(int suspectId, int detectiveId);
 
     Task<List<Suspect>> GetAssignedSuspectsAsync(int detectiveId);

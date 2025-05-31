@@ -18,11 +18,11 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
     IDetectiveEvidenceService, IDetectiveSuspectService, IDetectiveExpenseService, IDetectiveReportService
 {
     #region Case
-    public async Task<Case> UpdateCaseAsync(UpdateCaseByDetectiveDto dto, int detectiveId)
+    public async Task<Case> UpdateCaseAsync(int caseId, UpdateCaseByDetectiveDto dto, int detectiveId)
     {
         var caseEntity = await context.Cases
-            .FirstOrDefaultAsync(c => c.Id == dto.Id && c.DetectiveId == detectiveId) 
-                         ?? throw new EntityNotFoundException("Case", dto.Id);
+            .FirstOrDefaultAsync(c => c.Id == caseId && c.DetectiveId == detectiveId) 
+                         ?? throw new EntityNotFoundException("Case", caseId);
         
         mapper.Map(dto, caseEntity);
         
@@ -78,16 +78,16 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
         return evidenceEntity;
     }
 
-    public async Task<Evidence> UpdateEvidenceAsync(UpdateEvidenceDto dto, int detectiveId)
+    public async Task<Evidence> UpdateEvidenceAsync(int evidenceId, UpdateEvidenceDto dto, int detectiveId)
     {
         var hasAccess = await context.CaseEvidences
-            .AnyAsync(ce => ce.EvidenceId == dto.Id && ce.Case.DetectiveId == detectiveId);
+            .AnyAsync(ce => ce.EvidenceId == evidenceId && ce.Case.DetectiveId == detectiveId);
         
         if (!hasAccess) 
             throw new AccessDeniedException("Evidence", detectiveId);
         
         var evidenceEntity = await context.Evidences
-            .FindAsync(dto.Id) ?? throw new EntityNotFoundException("Evidence",  dto.Id);
+            .FindAsync(evidenceId) ?? throw new EntityNotFoundException("Evidence",  evidenceId);
 
         mapper.Map(dto, evidenceEntity);
         
@@ -261,16 +261,16 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
         return suspectEntity;
     }
 
-    public async Task<Suspect> UpdateSuspectAsync(UpdateSuspectDto dto, int detectiveId)
+    public async Task<Suspect> UpdateSuspectAsync(int suspectId, UpdateSuspectDto dto, int detectiveId)
     {
         var hasAccess = await context.CaseSuspects
-            .AnyAsync(cs => cs.SuspectId == dto.Id && cs.Case.DetectiveId == detectiveId);
+            .AnyAsync(cs => cs.SuspectId == suspectId && cs.Case.DetectiveId == detectiveId);
 
         if (!hasAccess)
             throw new AccessDeniedException("Suspect", detectiveId);
         
         var suspectEntity = await context.Suspects
-            .FindAsync(dto.Id) ?? throw new EntityNotFoundException("Suspect", dto.Id);
+            .FindAsync(suspectId) ?? throw new EntityNotFoundException("Suspect", suspectId);
 
         mapper.Map(dto, suspectEntity);
 
@@ -433,16 +433,16 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
         return expenseEntity;
     }
 
-    public async Task<Expense> UpdateExpenseAsync(UpdateExpenseDto dto, int detectiveId)
+    public async Task<Expense> UpdateExpenseAsync(int expenseId, UpdateExpenseDto dto, int detectiveId)
     {
         var hasAccess = await context.Expenses
-            .AnyAsync(e => e.Id == dto.Id && e.Case.DetectiveId == detectiveId);
+            .AnyAsync(e => e.Id == expenseId && e.Case.DetectiveId == detectiveId);
         
         if (!hasAccess)
             throw new AccessDeniedException("Expense",  detectiveId);
 
         var expenseEntity = await context.Expenses
-            .FindAsync(dto.Id) ?? throw new EntityNotFoundException("Expense",  detectiveId);
+            .FindAsync(expenseId) ?? throw new EntityNotFoundException("Expense",  expenseId);
 
         mapper.Map(dto, expenseEntity);
         await context.SaveChangesAsync();
@@ -511,16 +511,16 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
         return reportEntity;
     }
 
-    public async Task<Report> UpdateReportAsync(UpdateReportDto dto, int detectiveId)
+    public async Task<Report> UpdateReportAsync(int reportId, UpdateReportDto dto, int detectiveId)
     {
         var hasAccess = await context.Reports
-            .AnyAsync(r => r.Id == dto.Id && r.Case.DetectiveId == detectiveId);
+            .AnyAsync(r => r.Id == reportId && r.Case.DetectiveId == detectiveId);
 
         if (!hasAccess)
             throw new AccessDeniedException("Report", detectiveId);
 
         var reportEntity = await context.Reports
-            .FindAsync(dto.Id) ?? throw new EntityNotFoundException("Report", dto.Id);
+            .FindAsync(reportId) ?? throw new EntityNotFoundException("Report", reportId);
 
         mapper.Map(dto, reportEntity);
         await context.SaveChangesAsync();

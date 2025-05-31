@@ -4,8 +4,6 @@ namespace CaseFlow.BLL.Dto.Case;
 
 public class UpdateCaseByAdminDto
 {
-    public int Id { get; init; }
-
     public int? CaseTypeId { get; set; }
 
     public int? ClientId { get; set; }

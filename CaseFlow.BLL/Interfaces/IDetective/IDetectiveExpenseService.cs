@@ -6,7 +6,7 @@ namespace CaseFlow.BLL.Interfaces.IDetective;
 public interface IDetectiveExpenseService
 {
     Task<Expense> CreateExpenseAsync(int caseId, CreateExpenseDto dto, int detectiveId);
-    Task<Expense> UpdateExpenseAsync(UpdateExpenseDto dto, int detectiveId);
+    Task<Expense> UpdateExpenseAsync(int expenseId, UpdateExpenseDto dto, int detectiveId);
     Task DeleteExpenseAsync(int expenseId, int detectiveId);
     
     Task<List<Expense>> GetExpensesAsync(int detectiveId);

@@ -6,7 +6,7 @@ namespace CaseFlow.BLL.Interfaces.IAdmin;
 public interface IAdminCaseTypeService
 {
     Task<CaseType> CreateCaseTypeAsync(CreateCaseTypeDto dto);
-    Task<CaseType> UpdateCaseTypeAsync(UpdateCaseTypeDto dto);
+    Task<CaseType> UpdateCaseTypeAsync(int id, UpdateCaseTypeDto dto);
     Task DeleteCaseTypeAsync(int caseTypeId);
     
     Task<List<CaseType>> GetCaseTypesAsync();
