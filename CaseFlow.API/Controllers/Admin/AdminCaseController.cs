@@ -9,12 +9,8 @@ namespace CaseFlow.API.Controllers.Admin;
 public class AdminCaseController(IAdminCaseService caseService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetCases()
-    {
-        var cases = await caseService.GetCasesAsync();
-
-        return Ok(cases);
-    }
+    public async Task<IActionResult> GetCases() =>
+        Ok(await caseService.GetCasesAsync());
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCase(int id)
@@ -26,7 +22,7 @@ public class AdminCaseController(IAdminCaseService caseService) : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> PostCaseAsync(CreateCaseDto newCase)
+    public async Task<IActionResult> PostCase(CreateCaseDto newCase)
     {
         var caseEntity = await caseService.CreateCaseAsync(newCase);
         
@@ -34,7 +30,7 @@ public class AdminCaseController(IAdminCaseService caseService) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutCaseAsync(int id, UpdateCaseByAdminDto updateCase)
+    public async Task<IActionResult> PutCase(int id, UpdateCaseByAdminDto updateCase)
     {
         await caseService.UpdateCaseAsync(id, updateCase);
         
@@ -42,7 +38,7 @@ public class AdminCaseController(IAdminCaseService caseService) : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCaseAsync(int id)
+    public async Task<IActionResult> DeleteCase(int id)
     {
         await caseService.DeleteCaseAsync(id);
         

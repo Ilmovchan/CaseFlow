@@ -1,15 +1,5 @@
-PUT http://localhost:5041/admin/cases/3
-Content-Type: application/json
-
-{
-    "clientId" : 2,
-    "detectiveId" : 4,
-    "caseTypeId" : 1,
-    "title" : "Крадіжка у Одесі" ,
-    "description" : "Нічого примітного",
-    "DeadlineDate" : "2027-11-19"
-}
+GET http://localhost:5041/admin/case/3
 
 ###
 
-DELETE http://localhost:5041/admin/cases/3
+GET http://localhost:5041/admin/client/5

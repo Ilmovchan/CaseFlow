@@ -5,19 +5,19 @@ namespace CaseFlow.DAL.Enums;
 
 public enum ApprovalStatus
 {
-    [PgName("Чернетка")]
     [EnumMember(Value = "Чернетка")]
+    [PgName("Чернетка")]
     Draft,
     
-    [PgName("Надіслано")]
     [EnumMember(Value = "Надіслано")]
+    [PgName("Надіслано")]
     Submitted,
     
-    [PgName("Схвалено")]
     [EnumMember(Value = "Схвалено")]
+    [PgName("Схвалено")]
     Approved,
     
-    [PgName("Відхилено")]
     [EnumMember(Value = "Відхилено")]
+    [PgName("Відхилено")]
     Rejected,
 }

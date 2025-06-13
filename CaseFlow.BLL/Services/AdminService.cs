@@ -119,7 +119,7 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
     
     #region Detective
     
-    public async Task<Detective> CreateDetectiveAsync(CreateDetectiveDto dto)
+    public async Task<Detective> CreateDetectiveAsync(Dto.Detective.CreateDetectiveDto dto)
     {
         var detectiveEntity = mapper.Map<Detective>(dto);
 

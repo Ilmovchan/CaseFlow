@@ -1,4 +1,5 @@
-﻿using CaseFlow.DAL.Enums;
+﻿using CaseFlow.DAL.Converters;
+using CaseFlow.DAL.Enums;
 using CaseFlow.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,10 +43,10 @@ public partial class DetectiveAgencyDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .HasPostgresEnum<DetectiveStatus>("detective_status")
-            .HasPostgresEnum<CaseStatus>("case_status")
-            .HasPostgresEnum<EvidenceType>("evidence_type")
-            .HasPostgresEnum<ApprovalStatus>("approval_status");
+            .HasPostgresEnum<DetectiveStatus>("public", "detective_status")
+            .HasPostgresEnum<CaseStatus>("public", "case_status")
+            .HasPostgresEnum<EvidenceType>("public", "evidence_type")
+            .HasPostgresEnum<ApprovalStatus>("public", "approval_status");
 
         modelBuilder.Entity<Client>(entity =>
         {
@@ -89,9 +90,9 @@ public partial class DetectiveAgencyDbContext : DbContext
         modelBuilder.Entity<Case>(entity =>
         {
             entity.Property(e => e.Status)
-                .HasConversion<string>()                       
+                .HasConversion(new CaseStatusConverter())                       
                 .HasColumnType("case_status")                  
-                .HasDefaultValue(CaseStatus.Відкрито); 
+                .HasDefaultValue(CaseStatus.Opened); 
             
             entity.Property(e => e.StartDate)
                 .HasDefaultValueSql("CURRENT_DATE");
@@ -136,6 +137,8 @@ public partial class DetectiveAgencyDbContext : DbContext
         modelBuilder.Entity<Detective>(entity =>
         {
             entity.Property(e => e.Status)
+                .HasConversion(new DetectiveStatusConverter())
+                .HasColumnType("detective_status")
                 .HasDefaultValue(DetectiveStatus.Active);
 
             entity.ToTable(t =>
@@ -182,12 +185,14 @@ public partial class DetectiveAgencyDbContext : DbContext
 
             entity.ToTable(t =>
             {
-                t.HasCheckConstraint("type_format", 
-                    @"type ~ '^[А-ЯІЇЄа-яіїє0-9 .,!?;:-]+$'");
-        
                 t.HasCheckConstraint("collection_date_format", 
                     @"collection_date <= CURRENT_TIMESTAMP");
             });
+
+            entity.Property(e => e.Type)
+                .HasConversion(new EvidenceTypeConverter())
+                .HasColumnType("evidence_type");
+
         });
 
         
@@ -206,6 +211,8 @@ public partial class DetectiveAgencyDbContext : DbContext
                 .HasConstraintName("FK_case_suspect_suspect_id");
             
             entity.Property(e => e.ApprovalStatus)
+                .HasConversion(new ApprovalStatusConverter())
+                .HasColumnType("approval_status")
                 .HasDefaultValue(ApprovalStatus.Draft);
 
             entity.ToTable(t =>
@@ -229,6 +236,8 @@ public partial class DetectiveAgencyDbContext : DbContext
                 .HasConstraintName("FK_case_evidence_suspect_id");
             
             entity.Property(e => e.ApprovalStatus)
+                .HasConversion(new ApprovalStatusConverter())
+                .HasColumnType("approval_status")
                 .HasDefaultValue(ApprovalStatus.Draft);
 
             entity.ToTable(t =>
@@ -258,6 +267,8 @@ public partial class DetectiveAgencyDbContext : DbContext
             });
             
             entity.Property(e => e.ApprovalStatus)
+                .HasConversion(new ApprovalStatusConverter())
+                .HasColumnType("approval_status")
                 .HasDefaultValue(ApprovalStatus.Draft);
         });
         
@@ -278,6 +289,8 @@ public partial class DetectiveAgencyDbContext : DbContext
             });
             
             entity.Property(e => e.ApprovalStatus)
+                .HasConversion(new ApprovalStatusConverter())
+                .HasColumnType("approval_status")
                 .HasDefaultValue(ApprovalStatus.Draft);
         });
         

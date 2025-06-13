@@ -14,8 +14,6 @@ public class UpdateCaseByAdminDto
 
     public string? Description { get; set; }
 
-    public DateOnly? StartDate { get; set; }
-
     public DateOnly? DeadlineDate { get; set; }
 
     public DateOnly? CloseDate { get; set; }

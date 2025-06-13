@@ -9,12 +9,8 @@ namespace CaseFlow.API.Controllers.Admin;
 public class AdminClientController(IAdminClientService clientService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetClients()
-    {
-        var clients = await clientService.GetClientsAsync();
-
-        return Ok(clients);
-    }
+    public async Task<IActionResult> GetClients() =>
+        Ok(await clientService.GetClientsAsync());
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetClient(int id)
@@ -26,7 +22,7 @@ public class AdminClientController(IAdminClientService clientService) : Controll
 
 
     [HttpPost]
-    public async Task<IActionResult> PostClientAsync(CreateClientDto newClient)
+    public async Task<IActionResult> PostClient(CreateClientDto newClient)
     {
         var client = await clientService.CreateClientAsync(newClient);
         
@@ -34,7 +30,7 @@ public class AdminClientController(IAdminClientService clientService) : Controll
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutClientAsync(int id, UpdateClientDto updateClient)
+    public async Task<IActionResult> PutClient(int id, UpdateClientDto updateClient)
     {
         await clientService.UpdateClientAsync(id, updateClient);
         
@@ -42,7 +38,7 @@ public class AdminClientController(IAdminClientService clientService) : Controll
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteClientAsync(int id)
+    public async Task<IActionResult> DeleteClient(int id)
     {
         await clientService.DeleteClientAsync(id);
         
