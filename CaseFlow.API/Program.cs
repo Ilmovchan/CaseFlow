@@ -40,7 +40,6 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.UseInlineDefinitionsForEnums(); 
     options.SwaggerDoc("v1", new OpenApiInfo {Title = "CaseFlow.API", Version = "v1" });
-    
 });
 
 var app = builder.Build();
