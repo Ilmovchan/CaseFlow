@@ -15,7 +15,7 @@ public class CaseEvidence : IWorkflowEntity
     public int CaseId { get; set; }
 
     [Column("approval_status")]
-    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Draft;
+    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Чернетка;
     
     public virtual Case Case { get; set; } = null!;
     public virtual Evidence Evidence { get; set; } = null!;

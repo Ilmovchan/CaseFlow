@@ -30,7 +30,7 @@ public class Expense : IWorkflowEntity
     public string? Annotation { get; set; }
 
     [Column("approval_status")] 
-    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Draft;
+    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Чернетка;
 
     public Case Case { get; set; } = null!;
 }

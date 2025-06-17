@@ -9,13 +9,13 @@ public enum CaseStatus
 {
     [EnumMember(Value = "Відкрито")]
     [PgName("Відкрито")]
-    Opened,
+    Відкрито,
     
     [EnumMember(Value = "Закрито")]
     [PgName("Закрито")]
-    Closed,
+    Закрито,
     
     [EnumMember(Value = "Призупинено")]
     [PgName("Призупинено")]
-    Stopped,
+    Призупинено,
 }

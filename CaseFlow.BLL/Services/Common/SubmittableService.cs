@@ -16,7 +16,7 @@ public class SubmittableService<TEntity>(DetectiveAgencyDbContext context) : ISu
         if (entity == null)
             throw new EntityNotFoundException(typeof(TEntity), id);
 
-        entity.ApprovalStatus = ApprovalStatus.Submitted;
+        entity.ApprovalStatus = ApprovalStatus.Надіслано;
         await context.SaveChangesAsync();
     }
 }

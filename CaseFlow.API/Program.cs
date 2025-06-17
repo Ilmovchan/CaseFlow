@@ -1,64 +1,40 @@
-using CaseFlow.API;
-using CaseFlow.BLL.Interfaces.IAdmin;
-using CaseFlow.BLL.Interfaces.IDetective;
-using CaseFlow.BLL.Interfaces.Shared;
+using CaseFlow.API.Extensions;
 using CaseFlow.BLL.MappingProfiles;
-using CaseFlow.BLL.Services;
 using CaseFlow.DAL.Data;
+using CaseFlow.DAL.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connString = builder.Configuration.GetConnectionString("DetectiveAgencyDb");
 
-builder.Services.AddDbContext<DetectiveAgencyDbContext>(options =>
-    options.UseNpgsql(connString));
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(connString);
+dataSourceBuilder.MapEnum<CaseStatus>("case_status");
+dataSourceBuilder.MapEnum<DetectiveStatus>("detective_status");
+dataSourceBuilder.MapEnum<EvidenceType>("evidence_type");
+dataSourceBuilder.MapEnum<ApprovalStatus>("approval_status");
+dataSourceBuilder.EnableUnmappedTypes();
+
+var dataSource = dataSourceBuilder.Build();
+
+builder.Services.AddDbContext<DetectiveAgencyDbContext>(options => options.UseNpgsql(
+    dataSource,
+    o =>
+    {
+        o.MapEnum<CaseStatus>("case_status");
+        o.MapEnum<DetectiveStatus>("detective_status");
+        o.MapEnum<EvidenceType>("evidence_type");
+        o.MapEnum<ApprovalStatus>("approval_status");
+    }));
 
 builder.Services.AddControllers();
-
 builder.Services.AddAutoMapper(typeof(CaseFlowMappingProfile).Assembly);
 
-builder.Services.AddScoped<IAdminCaseService, AdminService>()
-    .AddProblemDetails()
-    .AddExceptionHandler<GlobalExceptionHandler>();
-
-builder.Services.AddScoped<IAdminCaseTypeService, AdminService>()
-    .AddProblemDetails()
-    .AddExceptionHandler<GlobalExceptionHandler>();
-
-builder.Services.AddScoped<IAdminClientService, AdminService>()
-    .AddProblemDetails()
-    .AddExceptionHandler<GlobalExceptionHandler>();
-
-builder.Services.AddScoped<IAdminDetectiveService, AdminService>()
-    .AddProblemDetails()
-    .AddExceptionHandler<GlobalExceptionHandler>();
-
-builder.Services.AddScoped<IAdminEvidenceService, AdminService>()
-    .AddProblemDetails()
-    .AddExceptionHandler<GlobalExceptionHandler>();
-
-builder.Services.AddScoped<IAdminExpenseService, AdminService>()
-    .AddProblemDetails()
-    .AddExceptionHandler<GlobalExceptionHandler>();
-
-builder.Services.AddScoped<IAdminReportService, AdminService>()
-    .AddProblemDetails()
-    .AddExceptionHandler<GlobalExceptionHandler>();
-
-builder.Services.AddScoped<IAdminSuspectService, AdminService>()
-    .AddProblemDetails()
-    .AddExceptionHandler<GlobalExceptionHandler>();
-
-builder.Services.AddScoped<IDetectiveCaseService, DetectiveService>();
-builder.Services.AddScoped<IDetectiveClientService, DetectiveService>();
-builder.Services.AddScoped<IDetectiveEvidenceService, DetectiveService>();
-builder.Services.AddScoped<IDetectiveExpenseService, DetectiveService>();
-builder.Services.AddScoped<IDetectiveReportService, DetectiveService>();
-builder.Services.AddScoped<IDetectiveSuspectService, DetectiveService>();
-
-builder.Services.AddScoped<IPostgresUserService, PostgresUserService>();
+builder.Services.AddAdminServices();
+builder.Services.AddDetectiveServices();
+builder.Services.AddAdditionalServices();
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -78,6 +54,5 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 
 app.Run();

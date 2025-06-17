@@ -1,5 +1,4 @@
-﻿using CaseFlow.DAL.Converters;
-using CaseFlow.DAL.Enums;
+﻿using CaseFlow.DAL.Enums;
 using CaseFlow.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -90,9 +89,8 @@ public partial class DetectiveAgencyDbContext : DbContext
         modelBuilder.Entity<Case>(entity =>
         {
             entity.Property(e => e.Status)
-                .HasConversion(new CaseStatusConverter())                       
                 .HasColumnType("case_status")                  
-                .HasDefaultValue(CaseStatus.Opened); 
+                .HasDefaultValue(CaseStatus.Відкрито); 
             
             entity.Property(e => e.StartDate)
                 .HasDefaultValueSql("CURRENT_DATE");
@@ -137,7 +135,6 @@ public partial class DetectiveAgencyDbContext : DbContext
         modelBuilder.Entity<Detective>(entity =>
         {
             entity.Property(e => e.Status)
-                .HasConversion(new DetectiveStatusConverter())
                 .HasColumnType("detective_status")
                 .HasDefaultValue(DetectiveStatus.Active);
             
@@ -193,7 +190,6 @@ public partial class DetectiveAgencyDbContext : DbContext
             });
 
             entity.Property(e => e.Type)
-                .HasConversion(new EvidenceTypeConverter())
                 .HasColumnType("evidence_type");
 
         });
@@ -214,9 +210,8 @@ public partial class DetectiveAgencyDbContext : DbContext
                 .HasConstraintName("FK_case_suspect_suspect_id");
             
             entity.Property(e => e.ApprovalStatus)
-                .HasConversion(new ApprovalStatusConverter())
                 .HasColumnType("approval_status")
-                .HasDefaultValue(ApprovalStatus.Draft);
+                .HasDefaultValue(ApprovalStatus.Чернетка);
 
             entity.ToTable(t =>
             {
@@ -239,9 +234,8 @@ public partial class DetectiveAgencyDbContext : DbContext
                 .HasConstraintName("FK_case_evidence_suspect_id");
             
             entity.Property(e => e.ApprovalStatus)
-                .HasConversion(new ApprovalStatusConverter())
                 .HasColumnType("approval_status")
-                .HasDefaultValue(ApprovalStatus.Draft);
+                .HasDefaultValue(ApprovalStatus.Чернетка);
 
             entity.ToTable(t =>
             {
@@ -270,9 +264,8 @@ public partial class DetectiveAgencyDbContext : DbContext
             });
             
             entity.Property(e => e.ApprovalStatus)
-                .HasConversion(new ApprovalStatusConverter())
                 .HasColumnType("approval_status")
-                .HasDefaultValue(ApprovalStatus.Draft);
+                .HasDefaultValue(ApprovalStatus.Чернетка);
         });
         
         modelBuilder.Entity<Report>(entity =>
@@ -292,9 +285,8 @@ public partial class DetectiveAgencyDbContext : DbContext
             });
             
             entity.Property(e => e.ApprovalStatus)
-                .HasConversion(new ApprovalStatusConverter())
                 .HasColumnType("approval_status")
-                .HasDefaultValue(ApprovalStatus.Draft);
+                .HasDefaultValue(ApprovalStatus.Чернетка);
         });
         
         modelBuilder.Entity<Suspect>(entity =>

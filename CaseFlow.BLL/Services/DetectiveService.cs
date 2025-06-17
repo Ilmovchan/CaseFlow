@@ -69,7 +69,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
         {
             CaseId = caseId,
             Evidence = evidenceEntity,
-            ApprovalStatus = ApprovalStatus.Draft,
+            ApprovalStatus = ApprovalStatus.Чернетка,
         };
 
         context.CaseEvidences.Add(caseEvidenceEntity);
@@ -144,7 +144,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
     public async Task<List<Evidence>> GetRejectedEvidencesAsync(int detectiveId)
     {
         return await context.CaseEvidences
-            .Where(ce => ce.Case.DetectiveId == detectiveId && ce.ApprovalStatus == ApprovalStatus.Rejected)
+            .Where(ce => ce.Case.DetectiveId == detectiveId && ce.ApprovalStatus == ApprovalStatus.Відхилено)
             .Select(ce => ce.Evidence)
             .Distinct()
             .ToListAsync();
@@ -153,7 +153,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
     public async Task<List<Evidence>> GetApprovedEvidencesAsync(int detectiveId)
     {
         return await context.CaseEvidences
-            .Where(ce => ce.Case.DetectiveId == detectiveId && ce.ApprovalStatus == ApprovalStatus.Approved)
+            .Where(ce => ce.Case.DetectiveId == detectiveId && ce.ApprovalStatus == ApprovalStatus.Схвалено)
             .Select(ce => ce.Evidence)
             .Distinct()
             .ToListAsync();
@@ -170,7 +170,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
     public async Task<List<Evidence>> GetSubmittedEvidencesAsync(int detectiveId)
     {
         return await context.CaseEvidences
-            .Where(ce => ce.Case.DetectiveId == detectiveId && ce.ApprovalStatus == ApprovalStatus.Submitted)
+            .Where(ce => ce.Case.DetectiveId == detectiveId && ce.ApprovalStatus == ApprovalStatus.Надіслано)
             .Select(ce => ce.Evidence)
             .Distinct()
             .ToListAsync();
@@ -203,7 +203,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
         {
             CaseId = caseId,
             EvidenceId = evidenceId,
-            ApprovalStatus = ApprovalStatus.Draft,
+            ApprovalStatus = ApprovalStatus.Чернетка,
         };
         
         context.CaseEvidences.Add(caseEvidenceEntity);
@@ -252,7 +252,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
         {
             CaseId = caseId,
             Suspect = suspectEntity,
-            ApprovalStatus = ApprovalStatus.Draft,
+            ApprovalStatus = ApprovalStatus.Чернетка,
         };
 
         context.CaseSuspects.Add(caseSuspectEntity);
@@ -327,7 +327,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
     public async Task<List<Suspect>> GetRejectedSuspectsAsync(int detectiveId)
     {
         return await context.CaseSuspects
-            .Where(cs => cs.Case.DetectiveId == detectiveId && cs.ApprovalStatus == ApprovalStatus.Rejected)
+            .Where(cs => cs.Case.DetectiveId == detectiveId && cs.ApprovalStatus == ApprovalStatus.Відхилено)
             .Select(cs => cs.Suspect)
             .Distinct()
             .ToListAsync();
@@ -336,7 +336,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
     public async Task<List<Suspect>> GetApprovedSuspectsAsync(int detectiveId)
     {
         return await context.CaseSuspects
-            .Where(cs => cs.Case.DetectiveId == detectiveId && cs.ApprovalStatus == ApprovalStatus.Approved)
+            .Where(cs => cs.Case.DetectiveId == detectiveId && cs.ApprovalStatus == ApprovalStatus.Схвалено)
             .Select(cs => cs.Suspect)
             .Distinct()
             .ToListAsync();
@@ -353,7 +353,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
     public async Task<List<Suspect>> GetSubmittedSuspectsAsync(int detectiveId)
     {
         return await context.CaseSuspects
-            .Where(cs => cs.Case.DetectiveId == detectiveId && cs.ApprovalStatus == ApprovalStatus.Submitted)
+            .Where(cs => cs.Case.DetectiveId == detectiveId && cs.ApprovalStatus == ApprovalStatus.Надіслано)
             .Select(cs => cs.Suspect)
             .Distinct()
             .ToListAsync();
@@ -385,7 +385,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
         {
             CaseId = caseId,
             SuspectId = suspectId,
-            ApprovalStatus = ApprovalStatus.Draft
+            ApprovalStatus = ApprovalStatus.Чернетка
         };
 
         context.CaseSuspects.Add(caseSuspectEntity);
@@ -475,14 +475,14 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
     public async Task<List<Expense>> GetRejectedExpensesAsync(int detectiveId)
     {
         return await context.Expenses
-            .Where(e => e.Case.DetectiveId == detectiveId && e.ApprovalStatus == ApprovalStatus.Rejected)
+            .Where(e => e.Case.DetectiveId == detectiveId && e.ApprovalStatus == ApprovalStatus.Відхилено)
             .ToListAsync();
     }
 
     public async Task<List<Expense>> GetApprovedExpensesAsync(int detectiveId)
     {
         return await context.Expenses
-            .Where(e => e.Case.DetectiveId == detectiveId && e.ApprovalStatus == ApprovalStatus.Approved)
+            .Where(e => e.Case.DetectiveId == detectiveId && e.ApprovalStatus == ApprovalStatus.Схвалено)
             .ToListAsync();
     }
 
@@ -553,21 +553,21 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
     public async Task<List<Report>> GetSubmittedReportsAsync(int detectiveId)
     {
         return await context.Reports
-            .Where(r => r.Case.DetectiveId == detectiveId && r.ApprovalStatus == ApprovalStatus.Submitted)
+            .Where(r => r.Case.DetectiveId == detectiveId && r.ApprovalStatus == ApprovalStatus.Надіслано)
             .ToListAsync();
     }
 
     public async Task<List<Report>> GetRejectedReportsAsync(int detectiveId)
     {
         return await context.Reports
-            .Where(r => r.Case.DetectiveId == detectiveId && r.ApprovalStatus == ApprovalStatus.Rejected)
+            .Where(r => r.Case.DetectiveId == detectiveId && r.ApprovalStatus == ApprovalStatus.Відхилено)
             .ToListAsync();
     }
 
     public async Task<List<Report>> GetApprovedReportsAsync(int detectiveId)
     {
         return await context.Reports
-            .Where(r => r.Case.DetectiveId == detectiveId && r.ApprovalStatus == ApprovalStatus.Approved)
+            .Where(r => r.Case.DetectiveId == detectiveId && r.ApprovalStatus == ApprovalStatus.Схвалено)
             .ToListAsync();
     }
 

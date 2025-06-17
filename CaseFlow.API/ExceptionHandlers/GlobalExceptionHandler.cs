@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
-namespace CaseFlow.API;
+namespace CaseFlow.API.Exceptions;
 
 public class GlobalExceptionHandler (ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
