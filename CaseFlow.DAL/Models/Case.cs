@@ -37,7 +37,7 @@ public class Case
     public DateOnly? CloseDate { get; set; }
 
     [Column("status")]
-    public CaseStatus Status { get; set; } = CaseStatus.Відкрито;
+    public CaseStatus Status { get; set; } = CaseStatus.Opened;
 
     public CaseType? CaseType { get; set; }
     public Client? Client { get; set; }

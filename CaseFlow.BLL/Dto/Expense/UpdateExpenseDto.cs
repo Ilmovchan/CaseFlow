@@ -8,5 +8,5 @@ public class UpdateExpenseDto
     public string Purpose { get; set; } = null!;
     public decimal Amount { get; set; }
     public string? Annotation { get; set; }
-    public ApprovalStatus Status { get; set; } = ApprovalStatus.Чернетка;
+    public ApprovalStatus Status { get; set; } = ApprovalStatus.Draft;
 }

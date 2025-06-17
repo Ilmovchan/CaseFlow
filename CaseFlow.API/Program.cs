@@ -1,3 +1,4 @@
+using CaseFlow.API.Converters;
 using CaseFlow.API.Extensions;
 using CaseFlow.BLL.MappingProfiles;
 using CaseFlow.DAL.Data;
@@ -29,7 +30,17 @@ builder.Services.AddDbContext<DetectiveAgencyDbContext>(options => options.UseNp
         o.MapEnum<ApprovalStatus>("approval_status");
     }));
 
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new DetectiveStatusJsonConverter());
+        options.JsonSerializerOptions.Converters.Add(new ApprovalStatusJsonConverter());
+        options.JsonSerializerOptions.Converters.Add(new CaseStatusJsonConverter());
+        options.JsonSerializerOptions.Converters.Add(new EvidenceTypeJsonConverter());
+    });
+
+    
 builder.Services.AddAutoMapper(typeof(CaseFlowMappingProfile).Assembly);
 
 builder.Services.AddAdminServices();

@@ -9,17 +9,17 @@ public enum ApprovalStatus
 {
     [EnumMember(Value = "Чернетка")]
     [PgName("Чернетка")]
-    Чернетка,
+    Draft,
     
     [EnumMember(Value = "Надіслано")]
     [PgName("Надіслано")]
-    Надіслано,
+    Pending,
     
     [EnumMember(Value = "Схвалено")]
     [PgName("Схвалено")]
-    Схвалено,
+    Approved,
     
     [EnumMember(Value = "Відхилено")]
     [PgName("Відхилено")]
-    Відхилено,
+    Declined,
 }

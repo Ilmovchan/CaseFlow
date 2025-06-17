@@ -303,7 +303,7 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
     public async Task<List<Evidence>> GetPendingEvidencesAsync()
     {
         return await context.CaseEvidences
-            .Where(ce => ce.ApprovalStatus == ApprovalStatus.Надіслано)
+            .Where(ce => ce.ApprovalStatus == ApprovalStatus.Pending)
             .Select(ce => ce.Evidence)
             .ToListAsync();
     }
@@ -338,7 +338,7 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
     public async Task<List<Expense>> GetPendingExpensesAsync()
     {
         return await context.Expenses
-            .Where(e => e.ApprovalStatus == ApprovalStatus.Надіслано)
+            .Where(e => e.ApprovalStatus == ApprovalStatus.Pending)
             .ToListAsync();
     }
     
@@ -372,7 +372,7 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
     public async Task<List<Report>> GetPendingReportsAsync()
     {
         return await context.Reports
-            .Where(r => r.ApprovalStatus == ApprovalStatus.Надіслано)
+            .Where(r => r.ApprovalStatus == ApprovalStatus.Pending)
             .ToListAsync();
     }
     
@@ -407,7 +407,7 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
     public async Task<List<Suspect>> GetPendingSuspectsAsync()
     {
         return await context.CaseSuspects
-            .Where(cs => cs.ApprovalStatus == ApprovalStatus.Надіслано)
+            .Where(cs => cs.ApprovalStatus == ApprovalStatus.Pending)
             .Select(cs => cs.Suspect)
             .ToListAsync();
     }

@@ -1,4 +1,5 @@
-Пофиксить маппинг caseStatus и в целом енамов
+
+!!! Разобраться в DetectiveStatusJsonConverter и GlobalExceptionHandler
 
 Добавить роли детектив и админ и дать им права (раскомментить в сервисах)
 

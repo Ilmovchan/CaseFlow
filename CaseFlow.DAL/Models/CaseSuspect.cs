@@ -21,7 +21,7 @@ public class CaseSuspect : IWorkflowEntity
     public string? Alibi { get; set; }
     
     [Column("approval_status")] 
-    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Чернетка;
+    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Draft;
     
     public virtual Case Case { get; set; } = null!;
     

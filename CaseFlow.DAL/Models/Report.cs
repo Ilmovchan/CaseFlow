@@ -25,7 +25,7 @@ public class Report : IWorkflowEntity
     public string? Comments { get; set; }
     
     [Column("approval_status")] 
-    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Чернетка;
+    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Draft;
 
     public Case Case { get; set; } = null!;
 }

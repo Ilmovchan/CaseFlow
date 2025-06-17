@@ -16,7 +16,7 @@ public class ApprovableService<TEntity>(DetectiveAgencyDbContext context) : IApp
         if (entity == null)
             throw new EntityNotFoundException(typeof(TEntity), id);
         
-        entity.ApprovalStatus = ApprovalStatus.Схвалено;
+        entity.ApprovalStatus = ApprovalStatus.Approved;
         await context.SaveChangesAsync();
     }
 
@@ -27,7 +27,7 @@ public class ApprovableService<TEntity>(DetectiveAgencyDbContext context) : IApp
         if (entity == null)
             throw new EntityNotFoundException(typeof(TEntity), id);
         
-        entity.ApprovalStatus = ApprovalStatus.Відхилено;
+        entity.ApprovalStatus = ApprovalStatus.Declined;
         await context.SaveChangesAsync();
     }
 }

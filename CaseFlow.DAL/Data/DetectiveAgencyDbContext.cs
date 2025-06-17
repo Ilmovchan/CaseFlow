@@ -90,7 +90,7 @@ public partial class DetectiveAgencyDbContext : DbContext
         {
             entity.Property(e => e.Status)
                 .HasColumnType("case_status")                  
-                .HasDefaultValue(CaseStatus.Відкрито); 
+                .HasDefaultValue(CaseStatus.Opened); 
             
             entity.Property(e => e.StartDate)
                 .HasDefaultValueSql("CURRENT_DATE");
@@ -211,7 +211,7 @@ public partial class DetectiveAgencyDbContext : DbContext
             
             entity.Property(e => e.ApprovalStatus)
                 .HasColumnType("approval_status")
-                .HasDefaultValue(ApprovalStatus.Чернетка);
+                .HasDefaultValue(ApprovalStatus.Draft);
 
             entity.ToTable(t =>
             {
@@ -235,7 +235,7 @@ public partial class DetectiveAgencyDbContext : DbContext
             
             entity.Property(e => e.ApprovalStatus)
                 .HasColumnType("approval_status")
-                .HasDefaultValue(ApprovalStatus.Чернетка);
+                .HasDefaultValue(ApprovalStatus.Draft);
 
             entity.ToTable(t =>
             {
@@ -265,7 +265,7 @@ public partial class DetectiveAgencyDbContext : DbContext
             
             entity.Property(e => e.ApprovalStatus)
                 .HasColumnType("approval_status")
-                .HasDefaultValue(ApprovalStatus.Чернетка);
+                .HasDefaultValue(ApprovalStatus.Draft);
         });
         
         modelBuilder.Entity<Report>(entity =>
@@ -286,7 +286,7 @@ public partial class DetectiveAgencyDbContext : DbContext
             
             entity.Property(e => e.ApprovalStatus)
                 .HasColumnType("approval_status")
-                .HasDefaultValue(ApprovalStatus.Чернетка);
+                .HasDefaultValue(ApprovalStatus.Draft);
         });
         
         modelBuilder.Entity<Suspect>(entity =>
