@@ -22,4 +22,8 @@
       <ProjectReference Include="..\CaseFlow.DAL\CaseFlow.DAL.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controllers\Detective\" />
+    </ItemGroup>
+
 </Project>

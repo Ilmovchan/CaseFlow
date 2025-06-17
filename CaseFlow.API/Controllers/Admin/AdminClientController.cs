@@ -9,10 +9,15 @@ namespace CaseFlow.API.Controllers.Admin;
 public class AdminClientController(IAdminClientService clientService) : ControllerBase
 {
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetClients() =>
         Ok(await clientService.GetClientsAsync());
     
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetClient(int id)
     {
         var client = await clientService.GetClientAsync(id);
@@ -22,6 +27,9 @@ public class AdminClientController(IAdminClientService clientService) : Controll
 
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> PostClient(CreateClientDto newClient)
     {
         var client = await clientService.CreateClientAsync(newClient);
@@ -30,6 +38,10 @@ public class AdminClientController(IAdminClientService clientService) : Controll
     }
 
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> PutClient(int id, UpdateClientDto updateClient)
     {
         await clientService.UpdateClientAsync(id, updateClient);
@@ -38,6 +50,10 @@ public class AdminClientController(IAdminClientService clientService) : Controll
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteClient(int id)
     {
         await clientService.DeleteClientAsync(id);

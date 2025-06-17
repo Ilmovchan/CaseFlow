@@ -24,8 +24,9 @@ public class Client
     [Column("date_of_birth")] 
     public DateOnly DateOfBirth { get; set; }
 
-    [Column("email")] 
-    [MaxLength(100)] 
+    [Column("email")]
+    [MaxLength(100)]
+    [EmailAddress(ErrorMessage = "Некоректна email-адреса")]
     public string Email { get; set; } = null!;
 
     [Column("father_name")]

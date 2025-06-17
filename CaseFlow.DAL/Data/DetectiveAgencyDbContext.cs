@@ -140,6 +140,9 @@ public partial class DetectiveAgencyDbContext : DbContext
                 .HasConversion(new DetectiveStatusConverter())
                 .HasColumnType("detective_status")
                 .HasDefaultValue(DetectiveStatus.Active);
+            
+            entity.Property(e => e.HireDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.ToTable(t =>
             {

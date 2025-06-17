@@ -1,8 +1,10 @@
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using NpgsqlTypes;
 
 namespace CaseFlow.DAL.Enums;
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum EvidenceType
 {
     [EnumMember(Value = "Біометричний доказ")]

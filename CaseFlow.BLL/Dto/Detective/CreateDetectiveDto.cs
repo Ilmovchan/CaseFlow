@@ -16,9 +16,7 @@ public class CreateDetectiveDto
     public string Street { get; set; } = null!;
     public string BuildingNumber { get; set; } = null!;
     public int? ApartmentNumber { get; set; }
-
-    public DateOnly HireDate { get; set; }
-
+    
     public decimal Salary { get; set; }
 
     public string? PersonalNotes { get; set; }

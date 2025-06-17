@@ -18,9 +18,7 @@ public class UpdateDetectiveDto
     public string? Street { get; set; }
     public string? BuildingNumber { get; set; }
     public int? ApartmentNumber { get; set; }
-
-    public DateOnly? HireDate { get; set; }
-
+    
     public decimal? Salary { get; set; }
 
     public string? PersonalNotes { get; set; }

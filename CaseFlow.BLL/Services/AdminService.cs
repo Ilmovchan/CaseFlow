@@ -22,6 +22,23 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
     
     public async Task<Case> CreateCaseAsync(CreateCaseDto dto)
     {
+        var clientExists = await context.Clients
+            .AnyAsync(e => e.Id == dto.ClientId);
+        
+        if (!clientExists)
+            throw new ArgumentException($"Client with id: {dto.ClientId} does not exist", nameof(dto.ClientId));
+        
+        var caseTypeExists = await context.CaseTypes.AnyAsync(ct => ct.Id == dto.CaseTypeId);
+        if (!caseTypeExists)
+            throw new ArgumentException($"CaseType with id: {dto.CaseTypeId} does not exist", nameof(dto.CaseTypeId));
+
+        if (dto.DetectiveId.HasValue)
+        {
+            var detectiveExists = await context.Detectives.AnyAsync(d => d.Id == dto.DetectiveId.Value);
+            if (!detectiveExists)
+                throw new ArgumentException($"Detective with id: {dto.DetectiveId} does not exist", nameof(dto.DetectiveId));
+        }
+        
         var caseEntity = mapper.Map<Case>(dto);
 
         context.Cases.Add(caseEntity);
@@ -55,6 +72,16 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
             await context.CaseSuspects
                 .Where(cs => cs.CaseId == caseId)
                 .ToListAsync());
+        
+        context.Reports.RemoveRange(
+            await context.Reports
+                .Where(r => r.CaseId == caseId)
+                .ToListAsync());
+        
+        context.Expenses.RemoveRange(
+            await context.Expenses
+                .Where(e => e.CaseId == caseId)
+                .ToListAsync());
 
         context.Cases.Remove(caseEntity);
 
@@ -78,6 +105,7 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
         public async Task<Client> CreateClientAsync(CreateClientDto dto)
     {
         var clientEntity = mapper.Map<Client>(dto);
+        clientEntity.RegistrationDate = DateTime.UtcNow;
 
         context.Clients.Add(clientEntity);
         await context.SaveChangesAsync();
@@ -101,10 +129,20 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
         var clientEntity = await context.Clients
             .FindAsync(clientId) ?? throw new EntityNotFoundException("Client", clientId);
         
+        var connectedCases = await context.Cases
+            .Where(c => c.ClientId == clientId)
+            .ToListAsync();
+
+        if (connectedCases.Count > 0)
+        {
+            var caseIds = connectedCases.Select(c => c.Id);
+            throw new EntityConflictException(clientId, caseIds);
+        }
+        
         context.Clients.Remove(clientEntity);
         await context.SaveChangesAsync();
     }
-
+    
     public async Task<Client?> GetClientAsync(int clientId)
     {
         return await context.Clients.FindAsync(clientId);
@@ -124,13 +162,16 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
         var detectiveEntity = mapper.Map<Detective>(dto);
 
         context.Detectives.Add(detectiveEntity);
+        detectiveEntity.Status = DetectiveStatus.Active;
+        detectiveEntity.HireDate = DateTime.UtcNow;
+
         await context.SaveChangesAsync();
 
-        var lastName = dto.LastName.ToLower();
-        var username = $"detective_{detectiveEntity.Id}_{lastName}";
-        var password = GeneratePassword();
-
-        await userService.CreateUserAsync(username, password, "detective");
+        // var lastName = dto.LastName.ToLower();
+        // var username = $"detective_{detectiveEntity.Id}_{lastName}";
+        // var password = GeneratePassword();
+        //
+        // await userService.CreateUserAsync(username, password, "detective");
 
         return detectiveEntity;
     }
@@ -140,37 +181,37 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
         var existingDetective = await context.Detectives
             .FindAsync(id) ?? throw new EntityNotFoundException("Detective", id);
 
-        var oldLastName = existingDetective.LastName;
-        var oldStatus = existingDetective.Status;
+        // var oldLastName = existingDetective.LastName;
+        // var oldStatus = existingDetective.Status;
 
         mapper.Map(dto, existingDetective);
         await context.SaveChangesAsync();
 
-        if (!string.Equals(oldLastName, existingDetective.LastName, StringComparison.OrdinalIgnoreCase))
-        {
-            var oldUsername = BuildUsername(oldLastName, existingDetective.Id);
-            var newUsername = BuildUsername(existingDetective.LastName, existingDetective.Id);
-            await userService.UpdateUsernameAsync(oldUsername, newUsername);
-        }
-        
-        if (existingDetective.Status != oldStatus)
-        {
-            var username = BuildUsername(existingDetective.LastName, existingDetective.Id);
-
-            switch (existingDetective.Status)
-            {
-                case DetectiveStatus.Active or DetectiveStatus.OnVacation:
-                    await userService.EnableUserAsync(username);
-                    break;
-                case DetectiveStatus.Fired or DetectiveStatus.Retired:
-                    await userService.DisableUserAsync(username);
-                    break;
-            }
-        }
+        // if (!string.Equals(oldLastName, existingDetective.LastName, StringComparison.OrdinalIgnoreCase))
+        // {
+        //     var oldUsername = BuildUsername(oldLastName, existingDetective.Id);
+        //     var newUsername = BuildUsername(existingDetective.LastName, existingDetective.Id);
+        //     await userService.UpdateUsernameAsync(oldUsername, newUsername);
+        // }
+        //
+        // if (existingDetective.Status != oldStatus)
+        // {
+        //     var username = BuildUsername(existingDetective.LastName, existingDetective.Id);
+        //
+        //     switch (existingDetective.Status)
+        //     {
+        //         case DetectiveStatus.Active or DetectiveStatus.OnVacation:
+        //             await userService.EnableUserAsync(username);
+        //             break;
+        //         case DetectiveStatus.Fired or DetectiveStatus.Retired:
+        //             await userService.DisableUserAsync(username);
+        //             break;
+        //     }
+        // }
 
         return existingDetective;
 
-        string BuildUsername(string lastName, int dId) => $"detective_{dId}_{lastName.ToLower()}";
+        // string BuildUsername(string lastName, int dId) => $"detective_{dId}_{lastName.ToLower()}";
     }
 
     public async Task DeleteDetectiveAsync(int detectiveId)
@@ -178,10 +219,17 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
         var deletedDetective = await context.Detectives
             .FindAsync(detectiveId) ?? throw new EntityNotFoundException("Detective", detectiveId);
 
+        var cases = await context.Cases
+            .Where(c => c.DetectiveId == detectiveId)
+            .ToListAsync();
+
+        foreach (var c in cases)
+            c.DetectiveId = null;
+        
         context.Detectives.Remove(deletedDetective);
         await context.SaveChangesAsync();
 
-        await userService.DeleteUserAsync($"detective_{detectiveId}_{deletedDetective.LastName}");
+        // await userService.DeleteUserAsync($"detective_{detectiveId}_{deletedDetective.LastName}");
     }
 
     public async Task<Detective?> GetDetectiveAsync(int detectiveId)
@@ -235,6 +283,12 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
 
     public async Task<List<Evidence>> GetEvidencesFromCaseAsync(int caseId)
     {
+        var caseExisting = await context.Cases
+            .AnyAsync(c => c.Id == caseId);
+        
+        if (!caseExisting)
+            throw new EntityNotFoundException("Case", caseId);
+        
         return await context.CaseEvidences
             .Where(ce => ce.CaseId == caseId)
             .Select(ce => ce.Evidence)
@@ -265,6 +319,12 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
 
     public async Task<List<Expense>> GetExpensesFromCaseAsync(int caseId)
     {
+        var caseExists = await context.Cases
+            .AnyAsync(c => c.Id == caseId);
+
+        if (!caseExists)
+            throw new EntityNotFoundException("Case", caseId);
+
         return await context.Expenses
             .Where(e => e.CaseId == caseId)
             .ToListAsync();
@@ -293,6 +353,12 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
 
     public async Task<List<Report>> GetReportsFromCaseAsync(int caseId)
     {
+        var caseExists = await context.Cases
+            .AnyAsync(c => c.Id == caseId);
+
+        if (!caseExists)
+            throw new EntityNotFoundException("Case", caseId);
+        
         return await context.Reports
             .Where(r => r.CaseId == caseId)
             .ToListAsync();
@@ -321,6 +387,12 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
 
     public async Task<List<Suspect>> GetSuspectsFromCaseAsync(int caseId)
     {
+        var caseExists = await context.Cases
+            .AnyAsync(c => c.Id == caseId);
+
+        if (!caseExists)
+            throw new EntityNotFoundException("Case", caseId);
+        
         return await context.CaseSuspects
             .Where(cs => cs.CaseId == caseId)
             .Select(cs => cs.Suspect)
@@ -369,7 +441,17 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
     {
         var caseTypeEntity = await context.CaseTypes
             .FindAsync(caseTypeId) ?? throw new EntityNotFoundException("CaseType", caseTypeId);
-            
+        
+        var connectedCases = await context.Cases
+            .Where(c => c.CaseTypeId == caseTypeId)
+            .ToListAsync();
+
+        if (connectedCases.Count > 0)
+        {
+            var caseIds = connectedCases.Select(c => c.Id);
+            throw new EntityConflictException(caseTypeId, caseIds);
+        }
+        
         context.CaseTypes.Remove(caseTypeEntity);
         await context.SaveChangesAsync();
     }

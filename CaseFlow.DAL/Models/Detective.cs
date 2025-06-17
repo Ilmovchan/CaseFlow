@@ -54,7 +54,7 @@ public class Detective
     public int? ApartmentNumber { get; set; }
 
     [Column("hire_date")]
-    public DateOnly HireDate { get; set; }
+    public DateTime HireDate { get; set; } = DateTime.UtcNow;
 
     [Column("salary")]
     [Precision(10, 2)]
