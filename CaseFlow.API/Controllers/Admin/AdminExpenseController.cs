@@ -5,7 +5,7 @@ namespace CaseFlow.API.Controllers.Admin;
 
 [ApiController]
 [Route("admin/expenses")]
-public class AdminExpenseController(IAdminExpenseService service) : ControllerBase
+public class AdminExpenseController(IAdminExpenseService service) : AdminBaseController
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]

@@ -5,7 +5,7 @@ namespace CaseFlow.API.Controllers.Admin;
 
 [ApiController]
 [Route("admin/evidences")]
-public class AdminEvidenceController(IAdminEvidenceService service) : ControllerBase
+public class AdminEvidenceController(IAdminEvidenceService service) : AdminBaseController
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]

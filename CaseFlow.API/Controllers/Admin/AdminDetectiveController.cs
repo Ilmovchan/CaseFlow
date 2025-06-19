@@ -6,7 +6,7 @@ namespace CaseFlow.API.Controllers.Admin;
 
 [ApiController]
 [Route("admin/detectives")]
-public class AdminDetectiveController(IAdminDetectiveService detectiveService) : ControllerBase
+public class AdminDetectiveController(IAdminDetectiveService detectiveService) : AdminBaseController
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]

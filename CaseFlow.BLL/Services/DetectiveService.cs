@@ -73,11 +73,11 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
     #region Evidence
     public async Task<Evidence> CreateEvidenceAsync(int caseId, CreateEvidenceDto dto, int detectiveId)
     {
-        var hasAccess = await context.CaseEvidences
-            .AnyAsync(ce => ce.CaseId == caseId && ce.Case.DetectiveId == detectiveId);
+        var hasAccess = await context.Cases
+            .AnyAsync(c => c.Id == caseId && c.DetectiveId == detectiveId);
 
         if (!hasAccess) 
-            throw new AccessDeniedException("Evidence", detectiveId);
+            throw new EntityNotFoundException("Case", caseId);
         
         var evidenceEntity = mapper.Map<Evidence>(dto);
         context.Evidences.Add(evidenceEntity);
@@ -101,7 +101,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(ce => ce.EvidenceId == evidenceId && ce.Case.DetectiveId == detectiveId);
         
         if (!hasAccess) 
-            throw new AccessDeniedException("Evidence", detectiveId);
+            throw new EntityNotFoundException("Evidence", detectiveId);
         
         var evidenceEntity = await context.Evidences
             .FindAsync(evidenceId) ?? throw new EntityNotFoundException("Evidence",  evidenceId);
@@ -118,7 +118,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(ce => ce.EvidenceId == evidenceId && ce.Case.DetectiveId == detectiveId);
         
         if (!hasAccess) 
-            throw new AccessDeniedException("Evidence", detectiveId);
+            throw new EntityNotFoundException("Evidence", detectiveId);
         
         var evidenceEntity = await context.Evidences
             .FindAsync(evidenceId) ?? throw new EntityNotFoundException("Evidence", evidenceId);
@@ -218,9 +218,9 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(c => c.Id == caseId && c.DetectiveId == detectiveId);
         
         if (!hasAccessToEvidence) 
-            throw new AccessDeniedException("Evidence", detectiveId);
+            throw new EntityNotFoundException("Evidence", detectiveId);
         if (!hasAccessToCase) 
-            throw new AccessDeniedException("Case", detectiveId);
+            throw new EntityNotFoundException("Case", detectiveId);
         
         var isCreatedAsync = await context.CaseEvidences
             .AnyAsync(ce => ce.EvidenceId == evidenceId && ce.CaseId == caseId);
@@ -249,9 +249,9 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(c => c.Id == caseId && c.DetectiveId == detectiveId);
         
         if (!hasAccessToEvidence) 
-            throw new AccessDeniedException("Evidence", detectiveId);
+            throw new EntityNotFoundException("Evidence", detectiveId);
         if (!hasAccessToCase) 
-            throw new AccessDeniedException("Case", detectiveId);
+            throw new EntityNotFoundException("Case", detectiveId);
         
         var caseEvidenceEntity = await context.CaseEvidences
             .FirstOrDefaultAsync(ce => ce.EvidenceId == evidenceId && ce.CaseId == caseId);
@@ -272,7 +272,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(c => c.Id == caseId && c.DetectiveId == detectiveId);
 
         if (!hasAccess) 
-            throw new AccessDeniedException("Case", detectiveId);
+            throw new EntityNotFoundException("Case", detectiveId);
         
         var suspectEntity = mapper.Map<Suspect>(dto);
         context.Suspects.Add(suspectEntity);
@@ -296,7 +296,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(cs => cs.SuspectId == suspectId && cs.Case.DetectiveId == detectiveId);
 
         if (!hasAccess)
-            throw new AccessDeniedException("Suspect", detectiveId);
+            throw new EntityNotFoundException("Suspect", detectiveId);
         
         var suspectEntity = await context.Suspects
             .FindAsync(suspectId) ?? throw new EntityNotFoundException("Suspect", suspectId);
@@ -313,7 +313,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(cs => cs.SuspectId == suspectId && cs.Case.DetectiveId == detectiveId);
 
         if (!hasAccess)
-            throw new AccessDeniedException("Suspect", detectiveId);
+            throw new EntityNotFoundException("Suspect", detectiveId);
         
         var suspectEntity = await context.Suspects
             .FindAsync(suspectId) ?? throw new EntityNotFoundException("Suspect", suspectId);
@@ -400,9 +400,9 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(c => c.Id == caseId && c.DetectiveId == detectiveId);
 
         if (!hasAccessToSuspect)
-            throw new AccessDeniedException("Suspect", detectiveId);
+            throw new EntityNotFoundException("Suspect", detectiveId);
         if (!hasAccessToCase)
-            throw new AccessDeniedException("Case", detectiveId);
+            throw new EntityNotFoundException("Case", detectiveId);
 
         var isAlreadyLinked = await context.CaseSuspects
             .AnyAsync(cs => cs.SuspectId == suspectId && cs.CaseId == caseId);
@@ -431,9 +431,9 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(c => c.Id == caseId && c.DetectiveId == detectiveId);
 
         if (!hasAccessToSuspect)
-            throw new AccessDeniedException("Suspect", detectiveId);
+            throw new EntityNotFoundException("Suspect", detectiveId);
         if (!hasAccessToCase)
-            throw new AccessDeniedException("Case", detectiveId);
+            throw new EntityNotFoundException("Case", detectiveId);
 
         var caseSuspectEntity = await context.CaseSuspects
             .FirstOrDefaultAsync(cs => cs.SuspectId == suspectId && cs.CaseId == caseId);
@@ -453,7 +453,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(e => e.CaseId == caseId && e.Case.DetectiveId == detectiveId);
         
         if (!hasAccess)
-            throw new AccessDeniedException("Expense",  detectiveId);
+            throw new EntityNotFoundException("Expense",  detectiveId);
         
         var expenseEntity = mapper.Map<Expense>(dto);
         context.Expenses.Add(expenseEntity);
@@ -468,7 +468,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(e => e.Id == expenseId && e.Case.DetectiveId == detectiveId);
         
         if (!hasAccess)
-            throw new AccessDeniedException("Expense",  detectiveId);
+            throw new EntityNotFoundException("Expense",  detectiveId);
 
         var expenseEntity = await context.Expenses
             .FindAsync(expenseId) ?? throw new EntityNotFoundException("Expense",  expenseId);
@@ -485,7 +485,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(e => e.Id == expenseId && e.Case.DetectiveId == detectiveId);
         
         if (!hasAccess)
-            throw new AccessDeniedException("Expense",  detectiveId);
+            throw new EntityNotFoundException("Expense",  detectiveId);
 
         var expenseEntity = await context.Expenses
             .FindAsync(expenseId) ?? throw new EntityNotFoundException("Expense", detectiveId);
@@ -529,7 +529,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(c => c.Id == caseId && c.DetectiveId == detectiveId);
 
         if (!hasAccess)
-            throw new AccessDeniedException("Report", detectiveId);
+            throw new EntityNotFoundException("Report", detectiveId);
 
         var reportEntity = mapper.Map<Report>(dto);
         reportEntity.CaseId = caseId;
@@ -546,7 +546,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(r => r.Id == reportId && r.Case.DetectiveId == detectiveId);
 
         if (!hasAccess)
-            throw new AccessDeniedException("Report", detectiveId);
+            throw new EntityNotFoundException("Report", detectiveId);
 
         var reportEntity = await context.Reports
             .FindAsync(reportId) ?? throw new EntityNotFoundException("Report", reportId);
@@ -563,7 +563,7 @@ public class DetectiveService(DetectiveAgencyDbContext context, IMapper mapper) 
             .AnyAsync(r => r.Id == reportId && r.Case.DetectiveId == detectiveId);
 
         if (!hasAccess)
-            throw new AccessDeniedException("Report", detectiveId);
+            throw new EntityNotFoundException("Report", detectiveId);
 
         var reportEntity = await context.Reports
             .FindAsync(reportId) ?? throw new EntityNotFoundException("Report", reportId);

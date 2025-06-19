@@ -6,7 +6,7 @@ namespace CaseFlow.API.Controllers.Admin;
 
 [ApiController]
 [Route("admin/cases")]
-public class AdminCaseController(IAdminCaseService caseService) : ControllerBase
+public class AdminCaseController(IAdminCaseService caseService) : AdminBaseController
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
