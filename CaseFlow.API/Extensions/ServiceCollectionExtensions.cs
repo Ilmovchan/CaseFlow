@@ -47,12 +47,29 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddDetectiveServices(this IServiceCollection services)
     {
-        services.AddScoped<IDetectiveCaseService, DetectiveService>();
-        services.AddScoped<IDetectiveClientService, DetectiveService>();
-        services.AddScoped<IDetectiveEvidenceService, DetectiveService>();
-        services.AddScoped<IDetectiveExpenseService, DetectiveService>();
-        services.AddScoped<IDetectiveReportService, DetectiveService>();
-        services.AddScoped<IDetectiveSuspectService, DetectiveService>();
+        services.AddScoped<IDetectiveCaseService, DetectiveService>()
+            .AddProblemDetails()
+            .AddExceptionHandler<GlobalExceptionHandler>();
+        
+        services.AddScoped<IDetectiveClientService, DetectiveService>()
+            .AddProblemDetails()
+            .AddExceptionHandler<GlobalExceptionHandler>();
+            
+        services.AddScoped<IDetectiveEvidenceService, DetectiveService>()
+            .AddProblemDetails()
+            .AddExceptionHandler<GlobalExceptionHandler>();
+        
+        services.AddScoped<IDetectiveExpenseService, DetectiveService>()
+            .AddProblemDetails()
+            .AddExceptionHandler<GlobalExceptionHandler>();
+        
+        services.AddScoped<IDetectiveReportService, DetectiveService>()
+            .AddProblemDetails()
+            .AddExceptionHandler<GlobalExceptionHandler>();
+        
+        services.AddScoped<IDetectiveSuspectService, DetectiveService>()
+            .AddProblemDetails()
+            .AddExceptionHandler<GlobalExceptionHandler>();
         
         return services;
     }
@@ -60,7 +77,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddAdditionalServices(this IServiceCollection services)
     {
         services.AddScoped<IPostgresUserService, PostgresUserService>();
-
         
         return services;
     }

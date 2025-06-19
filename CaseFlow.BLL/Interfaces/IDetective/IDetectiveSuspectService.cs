@@ -11,12 +11,12 @@ public interface IDetectiveSuspectService
 
     Task<List<Suspect>> GetAssignedSuspectsAsync(int detectiveId);
     Task<List<Suspect>> GetUnassignedSuspectsAsync(int detectiveId);
-    Task<List<Suspect>> GetAllSuspectsAsync(int detectiveId);
-    Task<List<Suspect>> GetRejectedSuspectsAsync(int detectiveId);
+    Task<List<Suspect>> GetSuspectsAsync(int detectiveId);
+    Task<List<Suspect>> GetDeclinedSuspectsAsync(int detectiveId);
     Task<List<Suspect>> GetApprovedSuspectsAsync(int detectiveId);
     Task<Suspect?> GetSuspectAsync(int suspectId, int detectiveId);
 
-    Task<List<Suspect>> GetSubmittedSuspectsAsync(int detectiveId);
+    Task<List<Suspect>> GetPendingSuspectsAsync(int detectiveId);
     Task LinkSuspectToCaseAsync(int suspectId, int caseId, int detectiveId);
     Task UnlinkSuspectFromCaseAsync(int suspectId, int caseId, int detectiveId);
 }

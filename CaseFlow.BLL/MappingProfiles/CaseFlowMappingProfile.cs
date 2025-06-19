@@ -3,6 +3,10 @@ using CaseFlow.BLL.Dto.Case;
 using CaseFlow.BLL.Dto.CaseType;
 using CaseFlow.BLL.Dto.Client;
 using CaseFlow.BLL.Dto.Detective;
+using CaseFlow.BLL.Dto.Evidence;
+using CaseFlow.BLL.Dto.Expense;
+using CaseFlow.BLL.Dto.Report;
+using CaseFlow.BLL.Dto.Suspect;
 using CaseFlow.DAL.Models;
 
 namespace CaseFlow.BLL.MappingProfiles;
@@ -23,6 +27,10 @@ public class CaseFlowMappingProfile : Profile
             .ForMember(dest => dest.CloseDate, opt => opt.Condition(src => src.CloseDate.HasValue))
             .ForMember(dest => dest.Status, opt => opt.Condition(src => src.Status.HasValue));
 
+        CreateMap<UpdateCaseByDetectiveDto, Case>()
+            .ForMember(dest => dest.Description, opt => opt.Condition(src => src.Description != null))
+            .ForMember(dest => dest.Status, opt => opt.Condition(src => src.Status.HasValue));
+        
         CreateMap<CreateCaseTypeDto, CaseType>();
 
         CreateMap<UpdateCaseTypeDto, CaseType>()
@@ -60,5 +68,49 @@ public class CaseFlowMappingProfile : Profile
             .ForMember(dest => dest.ApartmentNumber, opt => opt.Condition(src => src.ApartmentNumber.HasValue))
             .ForMember(dest => dest.Salary, opt => opt.Condition(src => src.Salary.HasValue))
             .ForMember(dest => dest.PersonalNotes, opt => opt.Condition(src => src.PersonalNotes != null));
+        
+        CreateMap<CreateSuspectDto, Suspect>();
+
+        CreateMap<UpdateSuspectDto, Suspect>()
+            .ForMember(dest => dest.FirstName, opt => opt.Condition(src => src.FirstName != null))
+            .ForMember(dest => dest.LastName, opt => opt.Condition(src => src.LastName != null))
+            .ForMember(dest => dest.FatherName, opt => opt.Condition(src => src.FatherName != null))
+            .ForMember(dest => dest.Nickname, opt => opt.Condition(src => src.Nickname != null))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.Condition(src => src.PhoneNumber != null))
+            .ForMember(dest => dest.DateOfBirth, opt => opt.Condition(src => src.DateOfBirth.HasValue))
+            .ForMember(dest => dest.Region, opt => opt.Condition(src => src.Region != null))
+            .ForMember(dest => dest.City, opt => opt.Condition(src => src.City != null))
+            .ForMember(dest => dest.Street, opt => opt.Condition(src => src.Street != null))
+            .ForMember(dest => dest.BuildingNumber, opt => opt.Condition(src => src.BuildingNumber != null))
+            .ForMember(dest => dest.ApartmentNumber, opt => opt.Condition(src => src.ApartmentNumber.HasValue))
+            .ForMember(dest => dest.Height, opt => opt.Condition(src => src.Height.HasValue))
+            .ForMember(dest => dest.Weight, opt => opt.Condition(src => src.Weight.HasValue))
+            .ForMember(dest => dest.PhysicalDescription, opt => opt.Condition(src => src.PhysicalDescription != null))
+            .ForMember(dest => dest.PriorConvictions, opt => opt.Condition(src => src.PriorConvictions != null));
+
+        CreateMap<CreateReportDto, Report>();
+
+        CreateMap<UpdateReportDto, Report>()
+            .ForMember(dest => dest.Summary, opt => opt.Condition(src => src.Summary != null))
+            .ForMember(dest => dest.Comments, opt => opt.Condition(src => src.Comments != null));
+
+        CreateMap<CreateExpenseDto, Expense>();
+
+        CreateMap<UpdateExpenseDto, Expense>()
+            .ForMember(dest => dest.DateTime, opt => opt.Condition(src => src.DateTime != default))
+            .ForMember(dest => dest.Purpose, opt => opt.Condition(src => src.Purpose != null))
+            .ForMember(dest => dest.Amount, opt => opt.Condition(src => src.Amount != default))
+            .ForMember(dest => dest.Annotation, opt => opt.Condition(src => src.Annotation != null));
+        
+        CreateMap<CreateEvidenceDto, Evidence>();
+
+        CreateMap<UpdateEvidenceDto, Evidence>()
+            .ForMember(dest => dest.Type, opt => opt.Condition(src => src.Type.HasValue))
+            .ForMember(dest => dest.Description, opt => opt.Condition(src => src.Description != null))
+            .ForMember(dest => dest.CollectionDate, opt => opt.Condition(src => src.CollectionDate.HasValue))
+            .ForMember(dest => dest.Region, opt => opt.Condition(src => src.Region != null))
+            .ForMember(dest => dest.Annotation, opt => opt.Condition(src => src.Annotation != null))
+            .ForMember(dest => dest.Purpose, opt => opt.Condition(src => src.Purpose != null));
+
     }
 }

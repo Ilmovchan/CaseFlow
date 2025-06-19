@@ -10,7 +10,7 @@ public interface IDetectiveExpenseService
     Task DeleteExpenseAsync(int expenseId, int detectiveId);
     
     Task<List<Expense>> GetExpensesAsync(int detectiveId);
-    Task<List<Expense>> GetRejectedExpensesAsync(int detectiveId);
+    Task<List<Expense>> GetDeclinedExpensesAsync(int detectiveId);
     Task<List<Expense>> GetApprovedExpensesAsync(int detectiveId);
     Task<Expense?> GetExpenseAsync(int expenseId, int detectiveId);
 }

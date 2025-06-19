@@ -21,7 +21,6 @@ public class DetectiveStatusJsonConverter : JsonConverter<DetectiveStatus>
         {
             var enumValue = (DetectiveStatus)field.GetValue(null)!;
 
-            // Используем EnumMember в приоритете, затем PgName, затем имя поля
             var enumMember = field.GetCustomAttribute<EnumMemberAttribute>()?.Value;
             var pgName = field.GetCustomAttribute<PgNameAttribute>()?.PgName;
 

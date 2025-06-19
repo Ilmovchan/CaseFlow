@@ -11,12 +11,13 @@ public interface IDetectiveEvidenceService
     
     Task<List<Evidence>> GetAssignedEvidencesAsync(int detectiveId);
     Task<List<Evidence>> GetUnassignedEvidencesAsync(int detectiveId);
-    Task<List<Evidence>> GetAllEvidencesAsync(int detectiveId);
-    Task<List<Evidence>> GetRejectedEvidencesAsync(int detectiveId);
+    Task<List<Evidence>> GetEvidencesAsync(int detectiveId);
+    Task<List<Evidence>> GetDeclinedEvidencesAsync(int detectiveId);
     Task<List<Evidence>> GetApprovedEvidencesAsync(int detectiveId);
     Task<Evidence?> GetEvidenceAsync(int evidenceId, int detectiveId);
+    Task<List<Evidence>> GetEvidencesFromCase(int caseId, int detectiveId);
     
-    Task<List<Evidence>> GetSubmittedEvidencesAsync(int detectiveId);
+    Task<List<Evidence>> GetPendingEvidencesAsync(int detectiveId);
     Task LinkEvidenceToCaseAsync(int evidenceId, int caseId, int detectiveId);
     Task UnlinkEvidenceFromCaseAsync(int evidenceId, int caseId, int detectiveId);
 }
