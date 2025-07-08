@@ -50,10 +50,11 @@ public class GlobalExceptionHandler (ILogger<GlobalExceptionHandler> logger) : I
         
         return exception switch
         {
-            EntityConflictException => (StatusCodes.Status409Conflict, exception.Message),
+            EntityDeleteConflictException => (StatusCodes.Status409Conflict, exception.Message),
             DbUpdateException => (StatusCodes.Status400BadRequest, exception.Message),
             ArgumentException => (StatusCodes.Status400BadRequest, exception.Message),
             EntityNotFoundException => (StatusCodes.Status404NotFound, exception.Message),
+            InvalidOperationException => (StatusCodes.Status409Conflict, exception.Message),
             _ => (StatusCodes.Status500InternalServerError, "500 Internal Server Error"),
         };
     }

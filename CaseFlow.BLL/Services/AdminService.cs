@@ -136,7 +136,7 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
         if (connectedCases.Count > 0)
         {
             var caseIds = connectedCases.Select(c => c.Id);
-            throw new EntityConflictException(clientId, caseIds);
+            throw new EntityDeleteConflictException("Client", clientId, caseIds);
         }
         
         context.Clients.Remove(clientEntity);
@@ -449,7 +449,7 @@ public class AdminService(DetectiveAgencyDbContext context, IMapper mapper, IPos
         if (connectedCases.Count > 0)
         {
             var caseIds = connectedCases.Select(c => c.Id);
-            throw new EntityConflictException(caseTypeId, caseIds);
+            throw new EntityDeleteConflictException("CaseType", caseTypeId, caseIds);
         }
         
         context.CaseTypes.Remove(caseTypeEntity);

@@ -13,6 +13,12 @@ public class DetectiveEvidenceController(IDetectiveEvidenceService evidenceServi
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetEvidences() =>
         Ok(await evidenceService.GetEvidencesAsync(DetectiveId));
+
+    [HttpGet("all")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetAllEvidences() =>
+        Ok(await evidenceService.GetAllEvidencesAsync(DetectiveId));
     
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -34,7 +40,7 @@ public class DetectiveEvidenceController(IDetectiveEvidenceService evidenceServi
     {
         var evidence = await evidenceService.CreateEvidenceAsync(caseId, newEvidence, DetectiveId);
         
-        return CreatedAtAction(nameof(GetEvidence), new {id = evidence.Id}, evidence);
+        return CreatedAtAction(nameof(GetEvidence), new {id = evidence.EvidenceId}, evidence);
     }
 
     [HttpPut("{id}")]
