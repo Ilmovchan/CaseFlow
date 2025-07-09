@@ -18,59 +18,32 @@ public partial class CaseFlowDbContext : DbContext
 
     #region DbSets
     public virtual DbSet<ActivityLog> ActivityLogs { get; set; }
-
     public virtual DbSet<Address> Addresses { get; set; }
-
     public virtual DbSet<AdminProfile> AdminProfiles { get; set; }
-
     public virtual DbSet<ApprovalStatus> ApprovalStatuses { get; set; }
-
     public virtual DbSet<Case> Cases { get; set; }
-
     public virtual DbSet<CasePriority> CasePriorities { get; set; }
-
     public virtual DbSet<CaseStatus> CaseStatuses { get; set; }
-
     public virtual DbSet<CaseSuspect> CaseSuspects { get; set; }
-
     public virtual DbSet<CaseType> CaseTypes { get; set; }
-
     public virtual DbSet<CaseWitness> CaseWitnesses { get; set; }
-
     public virtual DbSet<Client> Clients { get; set; }
-
     public virtual DbSet<DetectiveProfile> DetectiveProfiles { get; set; }
-
     public virtual DbSet<Employee> Employees { get; set; }
-
     public virtual DbSet<Evidence> Evidences { get; set; }
-
     public virtual DbSet<Expense> Expenses { get; set; }
-
     public virtual DbSet<LogStatus> LogStatuses { get; set; }
-
     public virtual DbSet<LogType> LogTypes { get; set; }
-
     public virtual DbSet<Permission> Permissions { get; set; }
-
     public virtual DbSet<Report> Reports { get; set; }
-
     public virtual DbSet<ReportEntityType> ReportEntityTypes { get; set; }
-
     public virtual DbSet<ReportEvent> ReportEvents { get; set; }
-
     public virtual DbSet<Role> Roles { get; set; }
-
     public virtual DbSet<SessionLog> SessionLogs { get; set; }
-
     public virtual DbSet<Suspect> Suspects { get; set; }
-
     public virtual DbSet<SuspectStatus> SuspectStatuses { get; set; }
-
     public virtual DbSet<Testimony> Testimonies { get; set; }
-
     public virtual DbSet<User> Users { get; set; }
-
     public virtual DbSet<Witness> Witnesses { get; set; }
     #endregion
 
