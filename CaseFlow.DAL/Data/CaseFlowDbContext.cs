@@ -14,6 +14,7 @@ public partial class CaseFlowDbContext : DbContext
     public CaseFlowDbContext(DbContextOptions<CaseFlowDbContext> options)
         : base(options)
     {
+        
     }
 
     #region DbSets
