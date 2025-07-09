@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace CaseFlow.DAL.Models;
 
-public partial class Client
+public partial class Witness
 {
-    public int ClientId { get; set; }
+    public int WitnessId { get; set; }
 
     public string FirstName { get; set; } = null!;
 
@@ -31,5 +31,5 @@ public partial class Client
 
     public virtual Address Address { get; set; } = null!;
 
-    public virtual ICollection<Case> Cases { get; set; } = new List<Case>();
+    public virtual CaseWitness? CaseWitness { get; set; }
 }

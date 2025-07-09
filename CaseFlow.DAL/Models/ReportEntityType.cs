@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace CaseFlow.DAL.Models;
 
-public partial class CaseType
+public partial class ReportEntityType
 {
-    public int TypeId { get; set; }
+    public int EntityTypeId { get; set; }
 
     public string Code { get; set; } = null!;
 
@@ -13,5 +13,5 @@ public partial class CaseType
 
     public string? Description { get; set; }
 
-    public virtual ICollection<Case> Cases { get; set; } = new List<Case>();
+    public virtual ICollection<ReportEvent> ReportEvents { get; set; } = new List<ReportEvent>();
 }

@@ -1,45 +1,18 @@
-using CaseFlow.API.Converters;
 using CaseFlow.API.Extensions;
 using CaseFlow.BLL.MappingProfiles;
 using CaseFlow.DAL.Data;
-using CaseFlow.DAL.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connString = builder.Configuration.GetConnectionString("DetectiveAgencyDb");
+var connString = builder.Configuration.GetConnectionString("CaseFlowDB");
 
-var dataSourceBuilder = new NpgsqlDataSourceBuilder(connString);
-dataSourceBuilder.MapEnum<CaseStatus>("case_status");
-dataSourceBuilder.MapEnum<DetectiveStatus>("detective_status");
-dataSourceBuilder.MapEnum<EvidenceType>("evidence_type");
-dataSourceBuilder.MapEnum<ApprovalStatus>("approval_status");
-dataSourceBuilder.EnableUnmappedTypes();
-
-var dataSource = dataSourceBuilder.Build();
-
-builder.Services.AddDbContext<DetectiveAgencyDbContext>(options => options.UseNpgsql(
-    dataSource,
-    o =>
-    {
-        o.MapEnum<CaseStatus>("case_status");
-        o.MapEnum<DetectiveStatus>("detective_status");
-        o.MapEnum<EvidenceType>("evidence_type");
-        o.MapEnum<ApprovalStatus>("approval_status");
-    }));
+builder.Services.AddDbContext<CaseFlowDbContext>(options =>
+    options.UseNpgsql(connString));
 
 builder.Services
-    .AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new DetectiveStatusJsonConverter());
-        options.JsonSerializerOptions.Converters.Add(new ApprovalStatusJsonConverter());
-        options.JsonSerializerOptions.Converters.Add(new CaseStatusJsonConverter());
-        options.JsonSerializerOptions.Converters.Add(new EvidenceTypeJsonConverter());
-    });
-
+    .AddControllers();
     
 builder.Services.AddAutoMapper(typeof(CaseFlowMappingProfile).Assembly);
 

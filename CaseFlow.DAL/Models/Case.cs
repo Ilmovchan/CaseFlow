@@ -1,50 +1,61 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using CaseFlow.DAL.Enums;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CaseFlow.DAL.Models;
 
-[Table("case")]
-public class Case
+public partial class Case
 {
-    [Key]
-    [Column("id")]
-    public int Id { get; set; }
+    public int CaseId { get; set; }
 
-    [Column("case_type_id")]
-    public int CaseTypeId { get; set; }
+    public string ReferenceNumber { get; set; } = null!;
 
-    [Column("client_id")]
+    public string? Subtitle { get; set; }
+
     public int ClientId { get; set; }
 
-    [Column("detective_id")]
-    public int? DetectiveId { get; set; }
+    public DateTime StartDate { get; set; }
 
-    [MaxLength(255)]
-    [Column("title")]
-    public string Title { get; set; } = null!;
+    public DateTime? EndDate { get; set; }
 
-    [Column("description")] 
-    public string Description { get; set; } = null!;
+    public int? AddressId { get; set; }
 
-    [Column("start_date")]
-    public DateOnly StartDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+    public int TypeId { get; set; }
 
-    [Column("deadline_date")]
-    public DateOnly DeadlineDate { get; set; }
+    public int PriorityId { get; set; }
 
-    [Column("close_date")]
-    public DateOnly? CloseDate { get; set; }
+    public int StatusId { get; set; }
 
-    [Column("status")]
-    public CaseStatus Status { get; set; } = CaseStatus.Opened;
+    public DateTime Created { get; set; }
 
-    public CaseType? CaseType { get; set; }
-    public Client? Client { get; set; }
-    public Detective? Detective { get; set; }
+    public DateTime LastUpdated { get; set; }
 
-    public ICollection<CaseSuspect>? CaseSuspects { get; set; }
-    public ICollection<CaseEvidence>? CaseEvidences { get; set; }
-    public ICollection<Report>? Reports { get; set; }
-    public ICollection<Expense>? Expenses { get; set; }
+    public string? Description { get; set; }
+
+    public int ApprovalStatusId { get; set; }
+
+    public string? ApprovalStatusDescription { get; set; }
+
+    public virtual Address? Address { get; set; }
+
+    public virtual ApprovalStatus ApprovalStatus { get; set; } = null!;
+
+    public virtual ICollection<CaseSuspect> CaseSuspects { get; set; } = new List<CaseSuspect>();
+
+    public virtual CaseWitness? CaseWitness { get; set; }
+
+    public virtual Client Client { get; set; } = null!;
+
+    public virtual ICollection<Evidence> Evidences { get; set; } = new List<Evidence>();
+
+    public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
+
+    public virtual CasePriority Priority { get; set; } = null!;
+
+    public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
+
+    public virtual CaseStatus Status { get; set; } = null!;
+
+    public virtual CaseType Type { get; set; } = null!;
+
+    public virtual ICollection<DetectiveProfile> Detectives { get; set; } = new List<DetectiveProfile>();
 }

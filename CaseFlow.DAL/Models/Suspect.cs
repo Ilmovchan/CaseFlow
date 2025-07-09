@@ -1,67 +1,51 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CaseFlow.DAL.Models;
 
-[Table("suspect")]
-public class Suspect
+public partial class Suspect
 {
-    [Column("id")]
-    public int Id { get; set; }
+    public int SuspectId { get; set; }
 
-    [Column("first_name")]
-    [MaxLength(100)]
     public string? FirstName { get; set; }
 
-    [Column("last_name")]
-    [MaxLength(100)]
     public string? LastName { get; set; }
 
-    [Column("father_name")]
-    [MaxLength(100)]
     public string? FatherName { get; set; }
 
-    [Column("nickname")]
-    [MaxLength(50)]
     public string? Nickname { get; set; }
 
-    [Column("phone_number")]
-    [MaxLength(20)]
-    public string? PhoneNumber { get; set; }
-
-    [Column("date_of_birth")]
     public DateOnly? DateOfBirth { get; set; }
 
-    [Column("region")]
-    [MaxLength(30)]
-    public string? Region { get; set; }
+    public string? Email { get; set; }
 
-    [Column("city")]
-    [MaxLength(30)]
-    public string? City { get; set; }
+    public string? PhoneNumber { get; set; }
 
-    [Column("street")]
-    [MaxLength(50)]
-    public string? Street { get; set; }
+    public int? AddressId { get; set; }
 
-    [Column("building_number")]
-    [MaxLength(30)]
-    public string? BuildingNumber { get; set; }
+    public string? Notes { get; set; }
 
-    [Column("apartment_number")]
-    public int? ApartmentNumber { get; set; }
-
-    [Column("height")]
     public int? Height { get; set; }
 
-    [Column("weight")]
     public int? Weight { get; set; }
 
-    [Column("physical_description")]
     public string? PhysicalDescription { get; set; }
 
-    [Column("prior_convictions")]
-    public string? PriorConvictions { get; set; }
+    public string? Alibi { get; set; }
 
-    public ICollection<CaseSuspect> CaseSuspects { get; set; } = new List<CaseSuspect>();
+    public bool? IsPriorConvicted { get; set; }
+
+    public DateTime Created { get; set; }
+
+    public DateTime LastUpdated { get; set; }
+
+    public int ApprovalStatusId { get; set; }
+
+    public string? ApprovalStatusDescription { get; set; }
+
+    public virtual Address? Address { get; set; }
+
+    public virtual ApprovalStatus ApprovalStatus { get; set; } = null!;
+
+    public virtual ICollection<CaseSuspect> CaseSuspects { get; set; } = new List<CaseSuspect>();
 }

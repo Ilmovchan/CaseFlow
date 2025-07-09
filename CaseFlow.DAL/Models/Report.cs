@@ -1,31 +1,31 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using CaseFlow.DAL.Enums;
-using CaseFlow.DAL.Interfaces;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CaseFlow.DAL.Models;
 
-[Table("report")]
-public class Report : IWorkflowEntity
+public partial class Report
 {
-    [Key]
-    [Column("id")]
-    public int Id { get; set; }
+    public int ReportId { get; set; }
 
-    [Column("case_id")]
     public int CaseId { get; set; }
 
-    [Column("report_date")]
-    public DateTime ReportDate { get; set; } = DateTime.Now; 
+    public string Title { get; set; } = null!;
 
-    [Column("summary")]
     public string Summary { get; set; } = null!;
 
-    [Column("comments")]
-    public string? Comments { get; set; }
-    
-    [Column("approval_status")] 
-    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Draft;
+    public string Conclusions { get; set; } = null!;
 
-    public Case Case { get; set; } = null!;
+    public string? AdditionalInfo { get; set; }
+
+    public DateTime Created { get; set; }
+
+    public int ApprovalStatusId { get; set; }
+
+    public string? ApprovalStatusDescription { get; set; }
+
+    public virtual ApprovalStatus ApprovalStatus { get; set; } = null!;
+
+    public virtual Case Case { get; set; } = null!;
+
+    public virtual ICollection<ReportEvent> ReportEvents { get; set; } = new List<ReportEvent>();
 }

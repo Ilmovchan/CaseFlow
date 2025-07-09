@@ -1,36 +1,27 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using CaseFlow.DAL.Enums;
-using CaseFlow.DAL.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CaseFlow.DAL.Models;
 
-[Table("expense")]
-public class Expense : IWorkflowEntity
+public partial class Expense
 {
-    [Column("id")]
-    public int Id { get; set; }
+    public int ExpenseId { get; set; }
 
-    [Column("case_id")]
     public int CaseId { get; set; }
 
-    [Column("date_time")] 
-    public DateTime DateTime { get; set; }
+    public string Type { get; set; } = null!;
 
-    [Column("purpose")]
-    [MaxLength(255)]
-    public string Purpose { get; set; } = null!;
+    public int Amount { get; set; }
 
-    [Column("amount")]
-    [Precision(10, 2)]
-    public decimal Amount { get; set; }
+    public DateTime Created { get; set; }
 
-    [Column("annotation")]
-    public string? Annotation { get; set; }
+    public DateTime LastUpdated { get; set; }
 
-    [Column("approval_status")] 
-    public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Draft;
+    public int ApprovalStatusId { get; set; }
 
-    public Case Case { get; set; } = null!;
+    public string? ApprovalStatusDescription { get; set; }
+
+    public virtual ApprovalStatus ApprovalStatus { get; set; } = null!;
+
+    public virtual Case Case { get; set; } = null!;
 }

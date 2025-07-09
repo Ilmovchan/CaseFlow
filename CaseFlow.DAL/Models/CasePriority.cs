@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace CaseFlow.DAL.Models;
 
-public partial class CaseType
+public partial class CasePriority
 {
-    public int TypeId { get; set; }
+    public int PriorityId { get; set; }
 
     public string Code { get; set; } = null!;
 

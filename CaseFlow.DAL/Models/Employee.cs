@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace CaseFlow.DAL.Models;
 
-public partial class Client
+public partial class Employee
 {
-    public int ClientId { get; set; }
+    public int EmployeeId { get; set; }
 
     public string FirstName { get; set; } = null!;
 
@@ -15,15 +15,17 @@ public partial class Client
 
     public DateOnly DateOfBirth { get; set; }
 
-    public string? Email { get; set; }
+    public string Email { get; set; } = null!;
 
-    public string? PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; } = null!;
 
     public int AddressId { get; set; }
 
-    public string? Notes { get; set; }
+    public DateTime HireDate { get; set; }
 
-    public DateTime RegistrationDate { get; set; }
+    public DateTime? TerminationDate { get; set; }
+
+    public bool IsActive { get; set; }
 
     public DateTime Created { get; set; }
 
@@ -31,5 +33,5 @@ public partial class Client
 
     public virtual Address Address { get; set; } = null!;
 
-    public virtual ICollection<Case> Cases { get; set; } = new List<Case>();
+    public virtual User? User { get; set; }
 }

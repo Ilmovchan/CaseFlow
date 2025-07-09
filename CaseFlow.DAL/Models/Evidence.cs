@@ -1,37 +1,39 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using CaseFlow.DAL.Enums;
-using CaseFlow.DAL.Interfaces;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CaseFlow.DAL.Models;
 
-[Table("evidence")]
-public class Evidence
+public partial class Evidence
 {
-    [Column("id")]
-    public int Id { get; set; }
+    public int EvidenceId { get; set; }
 
-    [Column("description")]
-    [MaxLength(200)]
-    public string Description { get; set; } = null!;
+    public int CaseId { get; set; }
 
-    [Column("type")]
-    public EvidenceType Type { get; set; }
+    public int TypeId { get; set; }
 
-    [Column("collection_date")]
-    public DateTime CollectionDate { get; set; }
+    public DateTime CollectedAt { get; set; }
 
-    [Column("region")] 
-    [MaxLength(200)] 
-    public string Region { get; set; } = "Не вказано";
-    
-    [Column("annotation")]
-    [MaxLength(200)]
-    public string? Annotation { get; set; }
-    
-    [Column("purpose")]
-    [MaxLength(200)]
+    public int AddressId { get; set; }
+
+    public string? Description { get; set; }
+
     public string? Purpose { get; set; }
-    
-    public ICollection<CaseEvidence> CaseEvidences { get; set; } = new List<CaseEvidence>();
+
+    public string? FilePath { get; set; }
+
+    public string? Notes { get; set; }
+
+    public DateTime Created { get; set; }
+
+    public DateTime LastUpdated { get; set; }
+
+    public int ApprovalStatusId { get; set; }
+
+    public string? ApprovalStatusDescription { get; set; }
+
+    public virtual Address Address { get; set; } = null!;
+
+    public virtual ApprovalStatus ApprovalStatus { get; set; } = null!;
+
+    public virtual Case Case { get; set; } = null!;
 }
